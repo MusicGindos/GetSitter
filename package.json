@@ -1,0 +1,22 @@
+{
+  "name": "getsitter",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MusicGindos/GetSitter.git"
+  },
+  "author": "Arel Gindos $ Dassi Rosen",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/MusicGindos/GetSitter/issues"
+  },
+  "dependencies": {
+    "mongoose": "~4.4.17",
+    "express": "~4.13.4"
+  }
+}
