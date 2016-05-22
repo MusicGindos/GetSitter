@@ -92,7 +92,7 @@ class Sitters extends EventEmitter {
         return this.json;
     }
 }
-module.exports = ShenkarGrades;
+module.exports = Sitters;
 
 
 

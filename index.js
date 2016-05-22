@@ -5,25 +5,27 @@ var express = require('express'),
     fs = require('fs'),
     mongoose = require('mongoose'),
     db = mongoose.connect('mongodb://db_usr:db_pass@ds011913.mlab.com:11913/sitters'),
-    User = require('./student'),
-    ShenkarGrades = require('./grades_modules'),
-    sitters = null,tempJson = null;
+    Parent = require('./parent'),
+    Sitter = require('./sitter'),
+    Invites = require('./invites'),
+    Sitters = require('./sitters_modules'),
+    SittersData = null,tempJson = null;
 
 
 mongoose.connection.once('open', function(){
-    User.find({}, function(err,sittersData){
+    Invites.find({}, function(err,sittersData){
         console.log("connection established to mongoDB\nyou can now use the functions");
-        sitters = new Sitters(sittersData); // get all the json from mongoDB and send it to constructor
+        SittersData = new Sitters(sittersData); // get all the json from mongoDB and send it to constructor
         mongoose.disconnect();
     });
 });
 
 app.get('/getAllData', function(req,res){
-    res.status(200).json(sitters.getAllStudentsGrades());
+    res.status(200).json(SittersData.getAllStudentsGrades());
 });
 
 app.get('/getStudGradeById/:id', function(req,res){
-    tempJson = sitters.getStudGradeById(req.params.id);
+    tempJson = SittersData.getStudGradeById(req.params.id);
     if (tempJson.status == false){
         res.set('header-getStudGradeById',"wrong id input");
         res.status(400).json(tempJson);
@@ -33,7 +35,7 @@ app.get('/getStudGradeById/:id', function(req,res){
 });
 
 app.get('', function(req,res){
-    tempJson = sitters.getExcellenceByYear(req.params.year);
+    tempJson = SittersData.getExcellenceByYear(req.params.year);
     if (tempJson.status == false){
         res.set('header-getExcellenceByYear',"cant find any studnet in the year");
         res.status(400).json(tempJson);
@@ -43,7 +45,7 @@ app.get('', function(req,res){
 });
 
 app.get('', function(req,res){
-    tempJson = sitters.getWorstAverageByYear(req.params.year);
+    tempJson = SittersData.getWorstAverageByYear(req.params.year);
     if (tempJson.status == false){
         res.set('header-getWorstAverageByYear',"cant find any studnet in the year");
         res.status(400).json(tempJson);
