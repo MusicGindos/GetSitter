@@ -175,7 +175,7 @@ class Sitters extends EventEmitter {
     }
     getTopRatedSitters(){
         this.emit(eventsConfig.GETTOPRATEDSITTERS);
-        return resultJSON;
+        return resultJSON; // TODO: take care if resultJSON is null
     }
     getAvailableNowSitters(time){
 
@@ -185,7 +185,7 @@ class Sitters extends EventEmitter {
     }
     getSittersByGender(gender){
         this.emit(eventsConfig.GETSITTERSBYGENDER,gender);
-        return resultJSON;
+        return resultJSON; // TODO: take care if resultJSON is null
     }
     getLastBookedSitters(){
 
