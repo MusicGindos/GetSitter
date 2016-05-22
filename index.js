@@ -9,16 +9,61 @@ var express = require('express'),
     Sitter = require('./sitter'),
     Invites = require('./invites'),
     Sitters = require('./sitters_modules'),
-    SittersData = null,tempJson = null;
+    Users = require('./user'),
+    SittersData = null,tempJson = null,
+    tempParents,tempSitters,tempInvites,tempUsers;
 
 
 mongoose.connection.once('open', function(){
     Invites.find({}, function(err,sittersData){
         console.log("connection established to mongoDB\nyou can now use the functions");
+        tempInvites = sittersData;
         SittersData = new Sitters(sittersData); // get all the json from mongoDB and send it to constructor
-        mongoose.disconnect();
+       // mongoose.disconnect();
+
     });
+
+    Parent.find({}, function(err,sittersData){
+        console.log("connection established to mongoDB\nyou can now use the functions");
+        tempParents = sittersData;
+       // SittersData = new Sitters(sittersData); // get all the json from mongoDB and send it to constructor
+       // mongoose.disconnect();
+
+    });
+    Users.find({}, function(err,sittersData){
+        console.log("connection established to mongoDB\nyou can now use the functions");
+        tempUsers = sittersData;
+
+    });
+
+    Sitter.find({}, function(err,sittersData){
+        console.log("connection established to mongoDB\nyou can now use the functions");
+        tempSitters = sittersData;
+        SittersData = new Sitters(tempParents,tempSitters,tempInvites,tempUsers); // get all the json from mongoDB and send it to constructor
+        mongoose.disconnect();
+
+    });
+    //console.log(tempInvites);
+    // console.log(tempParents);
+    //console.log(tempSitters);
 });
+
+/*
+mongoose.connection.once('open', function(){
+    Parent.find({}, function(err,dataTemp1){
+        tempParents = dataTemp1;
+        console.log(dataTemp1);
+    });
+   /* Sitter.find({}, function(err,dataTemp2){
+        tempSitters = dataTemp2;
+    });
+    Invites.find({}, function(err,dataTemp3){
+        tempInvites = dataTemp3;
+    });
+    console.log(tempParents);
+    SittersData = new Sitters(tempParents,tempSitters,tempInvites); // get all the json from mongoDB and send it to constructor
+    mongoose.disconnect();
+});*/
 
 app.get('/getAllData', function(req,res){
     res.status(200).json(SittersData.getAllStudentsGrades());

@@ -24,6 +24,7 @@ var schema_name = new schema({
         rating : Number,
         review : String
     }]
+    //TODO : add gender to sitter and mongoDB
 }, {collection: 'sitters'});
 
 Sitter = mongoose.model('Sitter', schema_name);

@@ -10,6 +10,7 @@ var schema_name = new schema({
     recurring : String,
     startTime : String,
     endTime : String
+    //TODO: add status - waiting for default and accepted/declined for sitter
 }, {collection: 'invites'});
 
 Invites = mongoose.model('Invites', schema_name);
