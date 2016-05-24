@@ -4,20 +4,29 @@ module.exports = {
     events: {
         AUTHBYEMAIL : 'authByEmail',
 
-        //Parents
+        //------------------------Parents---------------------------------
         //GET
         GETALLPARENTS : 'getAllParents',
         GETPARENTBYEMAIL : 'getParentByEmail',
         GETCHILDESBYEMAIL : 'getChildesByEmail',
         GETCHILDESBYNAME : 'getChildesByName',
 
-        //Sitters
+        //SET
+        INSERTPARENT : 'insertParent',
+        UPDATEPARENT : 'updateParent',
+
+        DELETEPARENT : 'deleteParent',
+        //------------------------Sitters---------------------------------
         //GET
         GETALLSITTERS : 'getAllSitters',
         GETSITTERBYEMAIL: 'getSitterByEmail',
         GETSITTERSBYNAME : 'getSittersByName',
 
         //SET + INSERT
+        INSERTSITTER : "insertSitter",
+        UPDATESITTER : "updateSitter",
+
+        DELETESITTER : "deleteSitter",
 
         //Sitters sorting - GET
         GETTOPRATEDSITTERS : 'getTopRatedSitters',
@@ -30,11 +39,23 @@ module.exports = {
         //SET + INSERT
 
 
-        //Invites
+        //------------------------Invites---------------------------------
         GETINVITEBYSITTEREMAIL : 'getInviteByEmail',
 
         //SET + INSERT
         UPDATESTATUSBYID : 'updateStatusById',
+        INSERTINVITE : 'insertInvite',
+        UPDATEINVITE : 'updateInvite',
+
+        DELETEINVITE : 'deleteInvite',
+
+        //------------------------Users---------------------------------
+
+        //SET + INSERT
+        INSERTUSER : 'insertUser',
+        UPDATEUSER : 'updateUser',
+
+        DELETEUSER : 'deleteUser',
 
 
         //Reviews

@@ -7,9 +7,10 @@ var schema_name = new schema({
     parentEmail : String,
     street : String,
     date : String,
-    recurring : String,
+    recurring : String ,
     startTime : String,
-    endTime : String
+    endTime : String,
+    uuid : String
     //TODO: add status - waiting for default and accepted/declined for sitter
 }, {collection: 'invites'});
 

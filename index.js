@@ -3,6 +3,7 @@ var express = require('express'),
     app = express(),
     port = process.env.PORT || 3000,
     fs = require('fs'),
+    uuid = require('node-uuid'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     Parent = require('./parent'),
@@ -53,6 +54,31 @@ app.post('/insertUser' ,function(req,res){ //TODO:  send json in react
     });
 });
 
+app.post('/updateUser' ,function(req,res){ //TODO:  send json in react
+
+        var query = Users.findOne().where('email',req.body.email);
+        query.exec(function(err,doc){
+            var query = doc.update({
+                $set : req.body
+            });
+            query.exec(function(err,results){
+                console.log('updated');
+            })
+        });
+    res.status(200).json(req.body); // just for debugging
+});
+
+app.post('/deleteUser' ,function(req,res){ //TODO:  send json in react
+
+    var query = Users.findOne().where('email',req.body.email);
+    query.exec(function(err,doc){
+        var query = doc.remove(function(err,deletedDoc){
+            console.log(deletedDoc);
+        });
+    });
+    res.status(200).json(req.body); // just for debugging
+});
+
 app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
     tempJson = new Sitter(req.body);
     tempJson.save(function(err , doc){
@@ -62,6 +88,31 @@ app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
             console.log(req.body);
         res.status(200).json(req.body); // just for debugging
     });
+});
+
+app.post('/updateSitter' ,function(req,res){ //TODO:  send json in react
+
+    var query = Sitter.findOne().where('email',req.body.email);
+    query.exec(function(err,doc){
+        var query = doc.update({
+            $set : req.body
+        });
+        query.exec(function(err,results){
+            console.log('updated');
+        })
+    });
+    res.status(200).json(req.body); // just for debugging
+});
+
+app.post('/deleteSitter' ,function(req,res){ //TODO:  send json in react
+
+    var query = Sitter.findOne().where('email',req.body.email);
+    query.exec(function(err,doc){
+        var query = doc.remove(function(err,deletedDoc){
+            console.log(deletedDoc);
+        });
+    });
+    res.status(200).json(req.body); // just for debugging
 });
 
 app.post('/insertParent' ,function(req,res){ //TODO: send json in react
@@ -75,15 +126,66 @@ app.post('/insertParent' ,function(req,res){ //TODO: send json in react
     });
 });
 
+app.post('/updateParent' ,function(req,res){ //TODO:  send json in react
+
+    var query = Parent.findOne().where('email',req.body.email);
+    query.exec(function(err,doc){
+        var query = doc.update({
+            $set : req.body
+        });
+        query.exec(function(err,results){
+            console.log('updated');
+        })
+    });
+    res.status(200).json(req.body); // just for debugging
+});
+
+app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
+
+    var query = Parent.findOne().where('email',req.body.email);
+    query.exec(function(err,doc){
+        var query = doc.remove(function(err,deletedDoc){
+            console.log(deletedDoc);
+        });
+    });
+    res.status(200).json(req.body); // just for debugging
+});
+
 app.post('/insertInvite' ,function(req,res){ //TODO:  send json in react
     tempJson = new Invites(req.body);
+    tempJson.uuid = uuid.v4();
     tempJson.save(function(err , doc){
         if(err)
             console.log(err);// TODO: take care of error
         else
             console.log(req.body);
-        res.status(200).json(req.body); // just for debugging
+        res.status(200).json(tempJson); // just for debugging
     });
+});
+
+app.post('/updateInvite' ,function(req,res){ //TODO:  send json in react
+
+    var query = Invites.findOne().where('uuid',req.body.uuid);
+    query.exec(function(err,doc){
+        var query = doc.update({
+            $set : req.body
+        });
+        query.exec(function(err,results){
+            console.log('updated');
+        })
+    });
+    res.status(200).json(req.body); // just for debugging
+});
+
+app.post('/deleteInvite' ,function(req,res){ //TODO:  send json in react
+
+    var query = Invites.findOne().where('uuid',req.body.uuid);
+    query.exec(function(err,doc){
+        var query = doc.remove(function(err,deletedDoc){
+            console.log(deletedDoc);
+        });
+    });
+    res.status(200).json(req.body); // just for debugging
 });
 
 app.get('/', function(req,res){
