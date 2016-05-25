@@ -141,6 +141,16 @@ class Sitters extends EventEmitter {
             }
             resultJSON = tempArray;
         });
+
+        this.on(eventsConfig.INSERTPARENT,function(parent){
+            this.dataParents[this.dataParents.length + 1] = parent;
+            resultJSON = {'status' : 'ok'};
+           /*for(var i = 0,length = this.dataParents.length; i < length; i++) {
+               if(this.dataParents[i].email == parent.email){
+
+               }
+           }*/
+        });
     }
 
     authByEmail(email,pass){
@@ -203,6 +213,36 @@ class Sitters extends EventEmitter {
 
     }
     addNewReview(review){
+
+    }
+    insertParent(parent){
+        this.emit(eventsConfig.INSERTPARENT,parent);
+        return {'status' : 'ok'};
+    }
+    updateParent(parent){
+
+    }
+    deleteParent(parent){
+
+    }
+    insertSitter(sitter){
+        this.emit(eventsConfig.INSERTSITTER,sitter);
+        return {'status' : 'ok'};
+    }
+    updateSitter(sitter){
+
+    }
+    deleteSitter(sitter){
+
+    }
+    insertUser(user){
+        this.emit(eventsConfig.INSERTUSER,user);
+        return {'status' : 'ok'};
+    }
+    updateUser(user){
+
+    }
+    deleteUser(user){
 
     }
 

@@ -43,6 +43,13 @@ db.once('connected', function(){
     });
 });
 
+app.get('/getAllParents', function(req,res){
+    res.status(200).json(SittersData.getAllParents());
+
+});
+
+
+
 app.post('/insertUser' ,function(req,res){ //TODO:  send json in react
     tempJson = new Users(req.body);
     tempJson.save(function(err , doc){
@@ -122,6 +129,7 @@ app.post('/insertParent' ,function(req,res){ //TODO: send json in react
             console.log(err);// TODO: take care of error
         else
             console.log(req.body);
+        SittersData.insertParent(req.body); 
         res.status(200).json(req.body); // just for debugging
     });
 });
