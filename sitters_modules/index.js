@@ -152,13 +152,18 @@ class Sitters extends EventEmitter {
             resultJSON = {'status' : 'true'};
         });
 
-        this.on(eventsConfig.UPDATESITTERRATING, function(sitterEmail) { // TODO: call it every time we insert review
+        this.on(eventsConfig.UPDATESITTERRATING, function(review) { // TODO: check why it fails when insert review
             var tempSitter =  _.find(this.dataSitters,function(sitter){
-                return sitter.email == sitterEmail;
+                return sitter.email == review.sitterEmail;
             });
-
-            var average = _.round(_.meanBy(tempSitter.reviews, function(o) { return o.rating; }),1);
-            console.log(average);
+            console.log(tempSitter);
+            resultJSON = _.round(_.meanBy(tempSitter.reviews, function(o) { return o.rating; }),1);
+            if(resultJSON == null){
+                resultJSON = 0;
+            }
+            var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
+            this.dataSitters[indexSitter].rating = resultJSON;
+            resultJSON = {'status' : 'updated'};
         });
 
         this.on(eventsConfig.GETTOPRATEDSITTERS, function(){
@@ -195,6 +200,20 @@ class Sitters extends EventEmitter {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
         });
+
+        this.on(eventsConfig.INSERTINVITE, function(invite){
+            var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == invite.sitterEmail; });
+            this.dataSitters[indexSitter].invites.push(invite);
+            var  indexParent = _.findIndex(this.dataParents, function(res) { return res.email == invite.parentEmail; });
+            this.dataParents[indexParent].invites.push(invite);
+            resultJSON = {'status':'ok'};
+        });
+
+        this.on(eventsConfig.INSERTREVIEW, function(review){
+            var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
+            this.dataSitters[indexSitter].reviews.push(review);
+        });
+
     }
 
     authByEmail(email,pass){
@@ -302,26 +321,26 @@ class Sitters extends EventEmitter {
 
     }
     
-    insertInvite(email,email1){ // TODO : think later of params
-        //TODO : insert to sitters + parents
-        //TODO : call inner function to update rating of a sitter + send it to mongo
+    insertInvite(invite){ 
+        this.emit(eventsConfig.INSERTINVITE,invite);
+        return resultJSON;
     }
 
     updateInvite(){
         //TODO : update in sitters + parents
     }
 
-    insertReview(){
-        //TODO : insert to sitters + parents
+    insertReview(review){
+        this.emit(eventsConfig.INSERTREVIEW,review);
+        this.emit(eventsConfig.UPDATESITTERRATING,review);  // update rating in local DB
+        //TODO : call inner function to update rating of a sitter + send it to mongo
+        return resultJSON;  // send the new rating to update in mongoDB
     }
 
     updateReview(){
         //TODO : update in sitters + parents
     }
 
-    deleteReview(){
-
-    }
 
     getReviewByEmail(){
 

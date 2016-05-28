@@ -203,23 +203,61 @@ app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
     });
 });
 
+app.post('/insertInvite', function(req,res){
+    var query = Parent.findOne().where('email',req.body.parentEmail);
+    query.exec(function(err,doc){
+       var query = doc.update({
+           $push : {invites: req.body}
+       });
+         query.exec(function(err,results){
+             //TODO: in case of error in internet
+        });
+    });
+
+    var querySit = Sitter.findOne().where('email',req.body.sitterEmail);
+    querySit.exec(function(err,doc){
+        var query = doc.update({
+            $push : {invites: req.body}
+        });
+        query.exec(function(err,results){
+            res.status(200).json(SittersData.insertInvite(req.body));
+            //TODO: in case of error in internet
+        });
+    });
+});
+
+app.post('/insertReview', function(req,res){
+    var query = Sitter.findOne().where('email',req.body.sitterEmail);
+    query.exec(function(err,doc){
+        var query = doc.update({
+            $push : {reviews: req.body}
+        });
+        query.exec(function(err,results){
+            var rating = SittersData.insertReview(req.body);
+            console.log("------------------------------" + rating + "---------------------");
+            if ( rating != null){
+                var query = Sitter.findOne().where('email',req.body.sitterEmail);
+                query.exec(function(err,doc){
+                    var query = doc.update({
+                        $set : {'rating': rating}
+                    });
+                    query.exec(function(err,results){
+                        console.log('updated rating');
+                    })
+                });
+            }
+            //TODO: in case of error in internet
+        });
+    });
+});
+
+
 // app.post('/updateSitterRating' ,function(req,res){ // inner function
 //                 res.status(200).json(SittersData.updateSitterRating(req.body.email));
 // });
 //
 
 
-app.post('/insertInvite' ,function(req,res){ //TODO:  send json in react
-    tempJson = new Invites(req.body);
-    tempJson.uuid = uuid.v4();
-    tempJson.save(function(err , doc){
-        if(err)
-            console.log(err);// TODO: take care of error
-        else
-            console.log(req.body);
-        res.status(200).json(tempJson); // just for debugging
-    });
-});
 
 app.post('/updateInvite' ,function(req,res){ //TODO:  send json in react
 

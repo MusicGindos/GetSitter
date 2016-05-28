@@ -28,6 +28,7 @@ var schema_name = new schema({
         startTime : String,
         endTime : String,
         uuid : String,
+        allergies : [String],
         status : String
     }]
 }, {collection: 'parents'});

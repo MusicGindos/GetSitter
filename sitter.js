@@ -22,7 +22,8 @@ var schema_name = new schema({
     reviews : [{
         date : String,
         parentName : String,
-
+        parentEmail : String,
+        sitterEmail : String,
         picture : String,
         rating : Number,
         review : String
@@ -36,9 +37,9 @@ var schema_name = new schema({
         startTime : String,
         endTime : String,
         uuid : String,
+        allergies : [String],
         status : String
     }]
-    //TODO : add gender to sitter and mongoDB
 }, {collection: 'sitters'});
 
 Sitter = mongoose.model('Sitter', schema_name);

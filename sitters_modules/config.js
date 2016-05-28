@@ -51,7 +51,6 @@ module.exports = {
         //GET
         INSERTREVIEW : 'insertReview',
         UPDATEREVIEW : 'updateReview',
-        DELETEREVIEW : 'deleteReview',
         GETREVIEWBYEMAIL : 'getReviewByEmail',  // sitter email
 
     }
