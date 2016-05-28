@@ -14,8 +14,8 @@ module.exports = {
         //SET
         INSERTPARENT : 'insertParent',
         UPDATEPARENT : 'updateParent',
-
         DELETEPARENT : 'deleteParent',
+
         //------------------------Sitters---------------------------------
         //GET
         GETALLSITTERS : 'getAllSitters',
@@ -25,44 +25,34 @@ module.exports = {
         //SET + INSERT
         INSERTSITTER : "insertSitter",
         UPDATESITTER : "updateSitter",
-
         DELETESITTER : "deleteSitter",
-
+        UPDATESITTERRATING : 'updateSitterRating',
+        
+        
         //Sitters sorting - GET
         GETTOPRATEDSITTERS : 'getTopRatedSitters',
         GETAVAILABLENOWSITTERS : 'getAvailableNowSitters',
         GETSITTERSBYWORKINGHOURS : 'getSittersByWorkingHours',
-        GETSITTERSBYGENDER : 'getSittersByGender',
+        GETSITTERBYGENDER : 'getSitterByGender',
+        
         GETLASTBOOKEDSITTERS : 'getLastBookedSitters',
         GETPARENTFAVORITESSITTERS : 'getParentFavoriteSitters',
 
         //SET + INSERT
-
-
         //------------------------Invites---------------------------------
-        GETINVITEBYSITTEREMAIL : 'getInviteByEmail',
-
+        GETINVITEBYSITTEREMAIL : 'getInvitesBySitterEmail',
+        GETINVITESBYPARENTEMAIL : 'getInvitesByParentEmail',
         //SET + INSERT
         UPDATESTATUSBYID : 'updateStatusById',
         INSERTINVITE : 'insertInvite',
         UPDATEINVITE : 'updateInvite',
-
-        DELETEINVITE : 'deleteInvite',
-
-        //------------------------Users---------------------------------
-
-        //SET + INSERT
-        INSERTUSER : 'insertUser',
-        UPDATEUSER : 'updateUser',
-
-        DELETEUSER : 'deleteUser',
-
-
+        
         //Reviews
         //GET
+        INSERTREVIEW : 'insertReview',
+        UPDATEREVIEW : 'updateReview',
+        DELETEREVIEW : 'deleteReview',
         GETREVIEWBYEMAIL : 'getReviewByEmail',  // sitter email
 
-        //SET + INSERT
-        ADDNEWREVIEW : 'addNewReview'
     }
 };

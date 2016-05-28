@@ -18,7 +18,18 @@ var schema_name = new schema({
         street : String,
         houseNumber : Number
     },
-    picturePath : String
+    picturePath : String,
+    invites : [{
+        sitterEmail : String,
+        parentEmail : String,
+        street : String,
+        date : String,
+        recurring : String ,
+        startTime : String,
+        endTime : String,
+        uuid : String,
+        status : String
+    }]
 }, {collection: 'parents'});
 
 Parent = mongoose.model('Parent', schema_name);

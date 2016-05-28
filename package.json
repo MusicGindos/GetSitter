@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/MusicGindos/GetSitter.git"
   },
-  "author": "Arel Gindos $ Dassi Rosen",
+  "author": "Arel Gindos & Dassi Rosen",
   "license": "BSD",
   "bugs": {
     "url": "https://github.com/MusicGindos/GetSitter/issues"
@@ -18,6 +18,9 @@
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "~4.13.4",
-    "mongoose": "~4.4.17"
+    "lodash": "^4.13.1",
+    "moment": "^2.13.0",
+    "mongoose": "~4.4.17",
+    "node-uuid": "1.4.7"
   }
 }

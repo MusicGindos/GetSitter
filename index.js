@@ -8,9 +8,10 @@ var express = require('express'),
     mongoose = require('mongoose'),
     Parent = require('./parent'),
     Sitter = require('./sitter'),
-    Invites = require('./invites'),
+
+    //Invites = require('./invites'),
     Sitters = require('./sitters_modules'),
-    Users = require('./user'),
+   // Users = require('./user'),
     db,
     SittersData = null,tempJson = null,
     tempParents,tempSitters,tempInvites,tempUsers;
@@ -23,23 +24,15 @@ app.use(bodyParser.urlencoded({ extended:true}));
 
 
 db.once('connected', function(){
-    console.log('getting data');
-    Invites.find({}, function(err,sittersData){
-        tempInvites = sittersData;
-    });
+    console.log('getting data from mongoDB');
 
     Parent.find({}, function(err,sittersData){
         tempParents = sittersData;
     });
 
-    Users.find({}, function(err,sittersData){
-        tempUsers = sittersData;
-    });
-
     Sitter.find({}, function(err,sittersData){
         tempSitters = sittersData;
-        SittersData = new Sitters(tempParents,tempSitters,tempInvites,tempUsers); // get all the json from mongoDB and send it to constructor
-       // mongoose.disconnect(); // TODO: need to think of when to close connection
+        SittersData = new Sitters(tempParents,tempSitters); // get all the json from mongoDB and send it to constructor
     });
 });
 
@@ -48,42 +41,55 @@ app.get('/getAllParents', function(req,res){
 
 });
 
-
-
-app.post('/insertUser' ,function(req,res){ //TODO:  send json in react
-    tempJson = new Users(req.body);
-    tempJson.save(function(err , doc){
-       if(err)
-           console.log(err);// TODO: take care of error
-        else
-           console.log(req.body);
-        res.status(200).json(req.body); // just for debugging
-    });
+app.post('/getParentByEmail',function (req,res){
+    res.status(200).json(SittersData.getParentByEmail(req.body.email));
 });
 
-app.post('/updateUser' ,function(req,res){ //TODO:  send json in react
-
-        var query = Users.findOne().where('email',req.body.email);
-        query.exec(function(err,doc){
-            var query = doc.update({
-                $set : req.body
-            });
-            query.exec(function(err,results){
-                console.log('updated');
-            })
-        });
-    res.status(200).json(req.body); // just for debugging
+app.post('/getChildesByEmail',function (req,res){
+    res.status(200).json(SittersData.getChildesByEmail(req.body.email));
 });
 
-app.post('/deleteUser' ,function(req,res){ //TODO:  send json in react
+app.post('/getChildesByName',function (req,res){
+    res.status(200).json(SittersData.getChildesByName(req.body.name));
+});
 
-    var query = Users.findOne().where('email',req.body.email);
-    query.exec(function(err,doc){
-        var query = doc.remove(function(err,deletedDoc){
-            console.log(deletedDoc);
-        });
-    });
-    res.status(200).json(req.body); // just for debugging
+app.get('/getAllSitters',function(req,res){
+    res.status(200).json(SittersData.getAllSitters(req.body.email));
+});
+
+
+app.post('/getSitterByEmail' ,function(req,res){ //TODO:  send json in react
+    res.status(200).json(SittersData.getSitterByEmail(req.body.email));
+});
+
+app.post('/getSitterByName' ,function(req,res){ //TODO:  send json in react
+    res.status(200).json(SittersData.getSitterByName(req.body.name));
+});
+
+app.get('/getTopRatedSitters',function(req,res){
+    res.status(200).json(SittersData.getTopRatedSitters());
+});
+
+app.get('/getAvailableNowSitters',function(req,res){
+    res.status(200).json(SittersData.getAvailableNowSitters());
+});
+
+
+app.post('/getSittersByWorkingHours',function(req,res){
+    res.status(200).json(SittersData.getSittersByWorkingHours(req.body.workingHours));
+});
+
+app.post('/getSitterByGender',function(req,res){
+    res.status(200).json(SittersData.getSitterByGender(req.body.gender));
+});
+
+
+
+app.get('/moment',function(req,res){
+    //moment().format();
+    var now = moment().hour();// + ':' + moment().minute();
+    res.json({'hour' : now});
+    //console.log(now);
 });
 
 app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
@@ -92,7 +98,11 @@ app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
         if(err)
             console.log(err);// TODO: take care of error
         else
-            console.log(req.body);
+        {
+            console.log('Sitter added');
+            SittersData.insertSitter(req.body);
+        }
+
         res.status(200).json(req.body); // just for debugging
     });
 });
@@ -105,21 +115,34 @@ app.post('/updateSitter' ,function(req,res){ //TODO:  send json in react
             $set : req.body
         });
         query.exec(function(err,results){
-            console.log('updated');
+            if(err){
+                console.log(err);
+                res.status(500).json(err);
+                //TODO: error
+            }
+            else {
+                res.status(200).json(SittersData.updateSitter(req.body));
+                console.log('updated');
+            }
         })
     });
-    res.status(200).json(req.body); // just for debugging
 });
 
 app.post('/deleteSitter' ,function(req,res){ //TODO:  send json in react
-
     var query = Sitter.findOne().where('email',req.body.email);
     query.exec(function(err,doc){
         var query = doc.remove(function(err,deletedDoc){
-            console.log(deletedDoc);
+            if (err){
+                res.status(500).json(err);
+                //TODO: error
+                console.log(err);
+            }
+            else{
+                console.log('deleted');
+                res.status(200).json(SittersData.deleteSitter(req.body));
+            }
         });
     });
-    res.status(200).json(req.body); // just for debugging
 });
 
 app.post('/insertParent' ,function(req,res){ //TODO: send json in react
@@ -128,13 +151,18 @@ app.post('/insertParent' ,function(req,res){ //TODO: send json in react
         if(err)
             console.log(err);// TODO: take care of error
         else
-            console.log(req.body);
-        SittersData.insertParent(req.body); 
+        {
+            SittersData.insertParent(req.body);
+            console.log('parent added');
+        }
+
+
         res.status(200).json(req.body); // just for debugging
     });
 });
 
-app.post('/updateParent' ,function(req,res){ //TODO:  send json in react
+
+app.post('/updateParent' ,function(req,res){
 
     var query = Parent.findOne().where('email',req.body.email);
     query.exec(function(err,doc){
@@ -142,10 +170,19 @@ app.post('/updateParent' ,function(req,res){ //TODO:  send json in react
             $set : req.body
         });
         query.exec(function(err,results){
-            console.log('updated');
+            if(err){
+                console.log(err);
+                res.status(500).json(err);
+                //TODO: error
+            }
+            else {
+                res.status(200).json(SittersData.updateParent(req.body));
+                console.log('updated');
+            }
+            
         })
     });
-    res.status(200).json(req.body); // just for debugging
+
 });
 
 app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
@@ -153,11 +190,24 @@ app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
     var query = Parent.findOne().where('email',req.body.email);
     query.exec(function(err,doc){
         var query = doc.remove(function(err,deletedDoc){
-            console.log(deletedDoc);
+            if (err){
+                res.status(500).json(err);
+                //TODO: error
+                console.log(err);
+            }
+            else{
+                console.log('deleted');
+                res.status(200).json(SittersData.deleteParent(req.body));
+            }
         });
     });
-    res.status(200).json(req.body); // just for debugging
 });
+
+// app.post('/updateSitterRating' ,function(req,res){ // inner function
+//                 res.status(200).json(SittersData.updateSitterRating(req.body.email));
+// });
+//
+
 
 app.post('/insertInvite' ,function(req,res){ //TODO:  send json in react
     tempJson = new Invites(req.body);

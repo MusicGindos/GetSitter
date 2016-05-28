@@ -10,6 +10,8 @@ var schema_name = new schema({
     minAge : Number,
     timeJoined : String,
     hourFee : Number,
+    workingHours : String,
+    gender : String,
     rating : Number,
     address : {
         city : String,
@@ -20,9 +22,21 @@ var schema_name = new schema({
     reviews : [{
         date : String,
         parentName : String,
+
         picture : String,
         rating : Number,
         review : String
+    }],
+    invites : [{
+        sitterEmail : String,
+        parentEmail : String,
+        street : String,
+        date : String,
+        recurring : String ,
+        startTime : String,
+        endTime : String,
+        uuid : String,
+        status : String
     }]
     //TODO : add gender to sitter and mongoDB
 }, {collection: 'sitters'});
