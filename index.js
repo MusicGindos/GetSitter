@@ -83,15 +83,6 @@ app.post('/getSitterByGender',function(req,res){
     res.status(200).json(SittersData.getSitterByGender(req.body.gender));
 });
 
-
-
-app.get('/moment',function(req,res){
-    //moment().format();
-    var now = moment().hour();// + ':' + moment().minute();
-    res.json({'hour' : now});
-    //console.log(now);
-});
-
 app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
     tempJson = new Sitter(req.body);
     tempJson.save(function(err , doc){
@@ -234,12 +225,11 @@ app.post('/insertReview', function(req,res){
         });
         query.exec(function(err,results){
             var rating = SittersData.insertReview(req.body);
-            console.log("------------------------------" + rating + "---------------------");
-            if ( rating != null){
+            if ( rating.status == 'updated'){
                 var query = Sitter.findOne().where('email',req.body.sitterEmail);
                 query.exec(function(err,doc){
                     var query = doc.update({
-                        $set : {'rating': rating}
+                        $set : {'rating': rating.rating}
                     });
                     query.exec(function(err,results){
                         console.log('updated rating');
@@ -257,10 +247,19 @@ app.post('/insertReview', function(req,res){
 // });
 //
 
+app.post('/getParentFavoriteSitters', function(req,res){
+    res.status(200).json(SittersData.getParentFavoriteSitters(req.body));
+});
 
+app.post('getInvitesByParentEmail',function (req,res){
+    res.status(200).json(SittersData.getInvitesByParentEmail(req.body));
+});
+
+app.post('getInvitesBySitterEmail',function (req,res){
+    res.status(200).json(SittersData.getInvitesBySitterEmail(req.body));
+});
 
 app.post('/updateInvite' ,function(req,res){ //TODO:  send json in react
-
     var query = Invites.findOne().where('uuid',req.body.uuid);
     query.exec(function(err,doc){
         var query = doc.update({
