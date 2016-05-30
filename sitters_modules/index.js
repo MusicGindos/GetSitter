@@ -104,7 +104,7 @@ class Sitters extends EventEmitter {
                 resultJSON  = {'status' : 'false'};
         });
 
-        this.on(eventsConfig.UPDATEPARENT, function(parent){
+        this.on(eventsConfig.UPDATEPARENT, function(parent){ // TODO: update only fields in json and not all
             var index = -1 ;
             index = _.findIndex(this.dataParents, function(res) { return res.email == parent.email; });
             if(index != -1){
@@ -132,7 +132,7 @@ class Sitters extends EventEmitter {
                 resultJSON  = {'status' : 'false'};
         });
 
-        this.on(eventsConfig.UPDATESITTER, function(sitter){ // :TODO: update just the keys in the json
+        this.on(eventsConfig.UPDATESITTER, function(sitter){ //  TODO: update only fields in json and not all
             var index = -1 ;
             index = _.findIndex(this.dataSitters, function(res) { return res.email == sitter.email; });
             if(index != -1){
@@ -156,14 +156,15 @@ class Sitters extends EventEmitter {
             var tempSitter =  _.find(this.dataSitters,function(sitter){
                 return sitter.email == review.sitterEmail;
             });
-            console.log(tempSitter);
+            //console.log(tempSitter);
             resultJSON = _.round(_.meanBy(tempSitter.reviews, function(o) { return o.rating; }),1);
             if(resultJSON == null){
                 resultJSON = 0;
             }
             var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
             this.dataSitters[indexSitter].rating = resultJSON;
-            resultJSON = {'status' : 'updated'};
+            resultJSON = {'status' : 'updated',
+                          'rating' :resultJSON };
         });
 
         this.on(eventsConfig.GETTOPRATEDSITTERS, function(){
@@ -214,12 +215,40 @@ class Sitters extends EventEmitter {
             this.dataSitters[indexSitter].reviews.push(review);
         });
 
+        this.on(eventsConfig.GETPARENTFAVORITESSITTERS, function(parent){
+
+            var temp = _.find(this.dataParents,function(parentRes){
+                return parentRes.email == parent.email;
+            });
+            // var temp = _.pickBy(this.dataParents, function(parentRes) {
+            //     return parentRes.email == parent.email;
+            // });
+           // console.log(temp.first.invites);
+            //temp = temp.invites;
+            // console.log(temp);
+               //temp = _.map(temp, 'sitterEmail');
+            temp = _.uniqBy(temp.invites,'sitterEmail'); // uniq invites by sitterEmail
+            temp = _.map(temp, 'sitterEmail'); // set array of uniq sitters email
+            // TODO: implement later from sitters rep
+
+            resultJSON = temp;
+        });
+
+        this.on(eventsConfig.GETINVITEBYSITTEREMAIL, function(sitter){
+
+        });
+
+        this.on(eventsConfig.GETINVITESBYPARENTEMAIL, function(parent){
+
+        });
+
     }
 
-    authByEmail(email,pass){
+    authByEmail(email,pass){// TODO:  fix this.
         this.emit(eventsConfig.AUTHBYEMAIL,email,pass);
         return auth;
     }
+
     getAllParents(){
         return this.dataParents;
     }
@@ -301,16 +330,20 @@ class Sitters extends EventEmitter {
     getLastBookedSitters(){
 
     }
-    getParentFavoriteSitters(){
 
+    getParentFavoriteSitters(parent){
+        this.emit(eventsConfig.GETPARENTFAVORITESSITTERS,parent);
+        return resultJSON;
     }
     
-    getInvitesBySitterEmail(email){
-
+    getInvitesBySitterEmail(sitter){
+        this.emit(eventsConfig.GETINVITEBYSITTEREMAIL,sitter);
+        return resultJSON;
     }
 
-    getInvitesByParentEmail(email){
-
+    getInvitesByParentEmail(parent){
+        this.emit(eventsConfig.GETINVITESBYPARENTEMAIL,parent);
+        return resultJSON;
     }
 
     updateStatusById(uuid){
@@ -318,7 +351,7 @@ class Sitters extends EventEmitter {
     }
 
     getReviewByEmail(email){
-
+        
     }
     
     insertInvite(invite){ 
