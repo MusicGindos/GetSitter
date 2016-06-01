@@ -82,18 +82,15 @@ class Sitters extends EventEmitter {
             resultJSON.sort(function(a, b){
                 return a.rating - b.rating;
             });
-
         });
 
         this.on(eventsConfig.GETSITTERBYGENDER,function(gender){
-
             resultJSON = _.pickBy(this.dataSitters, function(sitter) {
                 return sitter.gender == gender;
             });
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
-
         });
 
         this.on(eventsConfig.INSERTPARENT,function(parent){
@@ -108,6 +105,8 @@ class Sitters extends EventEmitter {
             var index = -1 ;
             index = _.findIndex(this.dataParents, function(res) { return res.email == parent.email; });
             if(index != -1){
+                if(this.dataParents[index].invites != null)
+                    parent.invites = this.dataParents[index].invites;
                 this.dataParents[index] = parent;
                 resultJSON = {'Success' : 'updated'};
             }
@@ -136,6 +135,10 @@ class Sitters extends EventEmitter {
             var index = -1 ;
             index = _.findIndex(this.dataSitters, function(res) { return res.email == sitter.email; });
             if(index != -1){
+                if(this.dataSitters[index].invites != null)
+                    sitter.invites = this.dataSitters[index].invites;
+                if(this.dataSitters[index].reviews != null)
+                    sitter.reviews = this.dataSitters[index].reviews;
                 this.dataSitters[index] = sitter;
                 resultJSON = {'Success' : 'updated'};
             }
@@ -156,7 +159,6 @@ class Sitters extends EventEmitter {
             var tempSitter =  _.find(this.dataSitters,function(sitter){
                 return sitter.email == review.sitterEmail;
             });
-            //console.log(tempSitter);
             resultJSON = _.round(_.meanBy(tempSitter.reviews, function(o) { return o.rating; }),1);
             if(resultJSON == null){
                 resultJSON = 0;
@@ -216,30 +218,93 @@ class Sitters extends EventEmitter {
         });
 
         this.on(eventsConfig.GETPARENTFAVORITESSITTERS, function(parent){
-
             var temp = _.find(this.dataParents,function(parentRes){
                 return parentRes.email == parent.email;
             });
-            // var temp = _.pickBy(this.dataParents, function(parentRes) {
-            //     return parentRes.email == parent.email;
-            // });
-           // console.log(temp.first.invites);
-            //temp = temp.invites;
-            // console.log(temp);
-               //temp = _.map(temp, 'sitterEmail');
             temp = _.uniqBy(temp.invites,'sitterEmail'); // uniq invites by sitterEmail
             temp = _.map(temp, 'sitterEmail'); // set array of uniq sitters email
-            // TODO: implement later from sitters rep
-
-            resultJSON = temp;
+            resultJSON =  _.filter(this.dataSitters, item => _.includes(temp, item.email));
         });
 
-        this.on(eventsConfig.GETINVITEBYSITTEREMAIL, function(sitter){
+        this.on(eventsConfig.GETINVITESBYSITTEREMAIL, function(sitterEmail){
+            console.log(sitterEmail);
+            var temp;
+            temp = _.pickBy(this.dataSitters, function(sitter) {
+                return sitter.email == sitterEmail;
+            });
+            console.log(temp);
+            temp = temp[Object.keys(temp)[0]];
 
+            if (temp != null){
+                temp = temp.invites;
+                resultJSON = temp;
+            }
+            else
+                resultJSON = {'error' : 'invites not founds'}
         });
 
-        this.on(eventsConfig.GETINVITESBYPARENTEMAIL, function(parent){
+        this.on(eventsConfig.GETINVITESBYPARENTEMAIL, function(parentEmail){
+            var temp;
+            temp = _.pickBy(this.dataParents, function(parent) {
+                return parent.email == parentEmail;
+            });
+            temp = temp[Object.keys(temp)[0]];
+            if (temp != null){
+                temp = temp.invites;
+                resultJSON = temp;
+            }
+            else
+                resultJSON = {'error' : 'invites not founds'}
+        });
 
+        this.on(eventsConfig.GETREVIEWSBYSITTEREMAIL, function(sitterEmail){
+            var temp;
+            temp = _.pickBy(this.dataSitters, function(sitter) {
+                return sitter.email == sitterEmail;
+            });
+            temp = temp[Object.keys(temp)[0]];
+            if (temp != null){
+                temp = temp.reviews;
+                resultJSON = temp;
+            }
+            else
+                resultJSON = {'error' : 'reviews not founds'}
+        });
+
+        this.on(eventsConfig.UPDATEINVITE, function(invite){
+            var parentIndex = _.findIndex(this.dataParents, function(res) { return res.email == invite.parentEmail; });
+            if(parentIndex != null ){
+                var inviteIndex = _.findIndex(this.dataParents[parentIndex].invites, function(res) { return res.uuid == invite.uuid; });
+                if(inviteIndex != null){
+                    this.dataParents[parentIndex].invites[inviteIndex] = invite;
+                }
+            }
+
+            var sitterIndex = _.findIndex(this.dataSitters, function(res) { return res.email == invite.sitterEmail; });
+            if(sitterIndex != null ){
+                var inviteIndex = _.findIndex(this.dataSitters[sitterIndex].invites, function(res) { return res.uuid == invite.uuid; });
+                if(inviteIndex != null){
+                    this.dataSitters[sitterIndex].invites[inviteIndex] = invite;
+                    resultJSON = {'status' : "success"};
+                }
+            }
+            else
+                resultJSON = {'status' : "failed"};
+        });
+
+        this.on(eventsConfig.UPDATEREVIEW, function(review){
+            var sitterIndex = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
+
+            if(sitterIndex != null ){
+                var inviteIndex = _.findIndex(this.dataSitters[sitterIndex].reviews, function(res) { return res.uuid == review.uuid; });
+                if(inviteIndex != null){
+                    this.dataSitters[sitterIndex].reviews[inviteIndex] = review;
+                    console.log(this.dataSitters[sitterIndex].reviews[inviteIndex]);
+                    resultJSON = {'status' : "success"};
+                } // TODO: check why local DB not updating
+            }
+            else
+                resultJSON = {'status' : "failed"};
         });
 
     }
@@ -337,7 +402,7 @@ class Sitters extends EventEmitter {
     }
     
     getInvitesBySitterEmail(sitter){
-        this.emit(eventsConfig.GETINVITEBYSITTEREMAIL,sitter);
+        this.emit(eventsConfig.GETINVITESBYSITTEREMAIL,sitter);
         return resultJSON;
     }
 
@@ -350,8 +415,9 @@ class Sitters extends EventEmitter {
         //TODO : update in sitters + parents
     }
 
-    getReviewByEmail(email){
-        
+    getReviewsBySitterEmail(email){
+        this.emit(eventsConfig.GETREVIEWBYSITTEREMAIL,email);
+        return resultJSON; // TODO: take care if resultJSON is null
     }
     
     insertInvite(invite){ 
@@ -359,8 +425,9 @@ class Sitters extends EventEmitter {
         return resultJSON;
     }
 
-    updateInvite(){
-        //TODO : update in sitters + parents
+    updateInvite(invite){
+        this.emit(eventsConfig.UPDATEINVITE,invite);
+        return resultJSON;
     }
 
     insertReview(review){
@@ -370,14 +437,12 @@ class Sitters extends EventEmitter {
         return resultJSON;  // send the new rating to update in mongoDB
     }
 
-    updateReview(){
-        //TODO : update in sitters + parents
+    updateReview(review){
+        this.emit(eventsConfig.UPDATEREVIEW,review);
+        return resultJSON;
     }
 
 
-    getReviewByEmail(){
-
-    }
 }
 module.exports = Sitters;
 

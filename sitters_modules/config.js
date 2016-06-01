@@ -40,7 +40,7 @@ module.exports = {
 
         //SET + INSERT
         //------------------------Invites---------------------------------
-        GETINVITEBYSITTEREMAIL : 'getInvitesBySitterEmail',
+        GETINVITESBYSITTEREMAIL : 'getInvitesBySitterEmail',
         GETINVITESBYPARENTEMAIL : 'getInvitesByParentEmail',
         //SET + INSERT
         UPDATESTATUSBYID : 'updateStatusById',
@@ -51,7 +51,7 @@ module.exports = {
         //GET
         INSERTREVIEW : 'insertReview',
         UPDATEREVIEW : 'updateReview',
-        GETREVIEWBYEMAIL : 'getReviewByEmail',  // sitter email
+        GETREVIEWSBYSITTEREMAIL : 'getReviewsBySitterEmail',  // sitter email
 
     }
 };

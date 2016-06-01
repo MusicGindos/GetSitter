@@ -8,10 +8,7 @@ var express = require('express'),
     mongoose = require('mongoose'),
     Parent = require('./parent'),
     Sitter = require('./sitter'),
-
-    //Invites = require('./invites'),
     Sitters = require('./sitters_modules'),
-   // Users = require('./user'),
     db,
     SittersData = null,tempJson = null,
     tempParents,tempSitters,tempInvites,tempUsers;
@@ -38,7 +35,6 @@ db.once('connected', function(){
 
 app.get('/getAllParents', function(req,res){
     res.status(200).json(SittersData.getAllParents());
-
 });
 
 app.post('/getParentByEmail',function (req,res){
@@ -170,7 +166,6 @@ app.post('/updateParent' ,function(req,res){
                 res.status(200).json(SittersData.updateParent(req.body));
                 console.log('updated');
             }
-            
         })
     });
 
@@ -213,6 +208,7 @@ app.post('/insertInvite', function(req,res){
         query.exec(function(err,results){
             res.status(200).json(SittersData.insertInvite(req.body));
             //TODO: in case of error in internet
+            // TODO : insert uuid
         });
     });
 });
@@ -235,44 +231,75 @@ app.post('/insertReview', function(req,res){
                         console.log('updated rating');
                     })
                 });
-            }
+            }// TODO : insert uuid
             //TODO: in case of error in internet
         });
     });
 });
 
-
-// app.post('/updateSitterRating' ,function(req,res){ // inner function
-//                 res.status(200).json(SittersData.updateSitterRating(req.body.email));
-// });
-//
+app.post('/getReviewsBySitterEmail', function(req,res){
+    res.status(200).json(SittersData.getReviewsBySitterEmail(req.body.email));
+});
 
 app.post('/getParentFavoriteSitters', function(req,res){
     res.status(200).json(SittersData.getParentFavoriteSitters(req.body));
 });
 
-app.post('getInvitesByParentEmail',function (req,res){
-    res.status(200).json(SittersData.getInvitesByParentEmail(req.body));
+app.post('/getInvitesByParentEmail',function (req,res){
+    res.status(200).json(SittersData.getInvitesByParentEmail(req.body.email));
 });
 
-app.post('getInvitesBySitterEmail',function (req,res){
-    res.status(200).json(SittersData.getInvitesBySitterEmail(req.body));
+app.post('/getInvitesBySitterEmail',function (req,res){
+    res.status(200).json(SittersData.getInvitesBySitterEmail(req.body.email));
 });
 
-app.post('/updateInvite' ,function(req,res){ //TODO:  send json in react
-    var query = Invites.findOne().where('uuid',req.body.uuid);
-    query.exec(function(err,doc){
-        var query = doc.update({
-            $set : req.body
-        });
-        query.exec(function(err,results){
-            console.log('updated');
-        })
-    });
-    res.status(200).json(req.body); // just for debugging
+app.post('/updateInvite' ,function(req,res){
+
+    res.status(200).json(SittersData.updateInvite(req.body));
+    // var query = Invites.findOne().where('uuid',req.body.uuid);
+    // query.exec(function(err,doc){
+    //     var query = doc.update({
+    //         $set : req.body
+    //     });
+    //     query.exec(function(err,results){
+    //         if(err){
+    //             console.log(err);
+    //             res.status(500).json(err);
+    //             //TODO: error
+    //         }
+    //         else {
+    //             res.status(200).json(SittersData.updateInvite(req.body));
+    //             console.log('updated');
+    //         }
+    //     })
+    // });
+    // res.status(200).json(req.body); // just for debugging
 });
 
-app.post('/deleteInvite' ,function(req,res){ //TODO:  send json in react
+app.post('/updateReview' ,function(req,res){
+
+    res.status(200).json(SittersData.updateReview(req.body));
+    // var query = Invites.findOne().where('uuid',req.body.uuid);
+    // query.exec(function(err,doc){
+    //     var query = doc.update({
+    //         $set : req.body
+    //     });
+    //     query.exec(function(err,results){
+    //         if(err){
+    //             console.log(err);
+    //             res.status(500).json(err);
+    //             //TODO: error
+    //         }
+    //         else {
+    //             res.status(200).json(SittersData.updateInvite(req.body));
+    //             console.log('updated');
+    //         }
+    //     })
+    // });
+    // res.status(200).json(req.body); // just for debugging
+});
+
+app.post('/deleteInvite' ,function(req,res){
 
     var query = Invites.findOne().where('uuid',req.body.uuid);
     query.exec(function(err,doc){
