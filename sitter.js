@@ -25,7 +25,7 @@ var schema_name = new schema({
         parentName : String,
         parentEmail : String,
         sitterEmail : String,
-        picture : String,
+        pictureParent : String,
         rating : Number,
         review : String
     }],
