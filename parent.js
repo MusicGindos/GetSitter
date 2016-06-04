@@ -14,7 +14,6 @@ var schema_name = new schema({
         name : String,
         age: Number,
         profilePictureURL : String,
-        fullPicture : String,
         allergies : [String]
     }],
     address : {
