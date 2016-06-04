@@ -8,11 +8,14 @@ var express = require('express'),
     mongoose = require('mongoose'),
     Parent = require('./parent'),
     Sitter = require('./sitter'),
+    moment = require('moment'),
     Sitters = require('./sitters_modules'),
     db,
-    SittersData = null,tempJson = null,
-    tempParents,tempSitters,tempInvites,tempUsers;
-
+    SittersData = null,
+    tempJson = null,
+    tempParents,
+    tempSitters;
+    moment().format();
 
 mongoose.connect('mongodb://db_usr:db_pass@ds011913.mlab.com:11913/sitters');
 db = mongoose.connection;
@@ -22,11 +25,9 @@ app.use(bodyParser.urlencoded({ extended:true}));
 
 db.once('connected', function(){
     console.log('getting data from mongoDB');
-
     Parent.find({}, function(err,sittersData){
         tempParents = sittersData;
     });
-
     Sitter.find({}, function(err,sittersData){
         tempSitters = sittersData;
         SittersData = new Sitters(tempParents,tempSitters); // get all the json from mongoDB and send it to constructor
@@ -53,7 +54,6 @@ app.get('/getAllSitters',function(req,res){
     res.status(200).json(SittersData.getAllSitters(req.body.email));
 });
 
-
 app.post('/getSitterByEmail' ,function(req,res){ //TODO:  send json in react
     res.status(200).json(SittersData.getSitterByEmail(req.body.email));
 });
@@ -70,7 +70,6 @@ app.get('/getAvailableNowSitters',function(req,res){
     res.status(200).json(SittersData.getAvailableNowSitters());
 });
 
-
 app.post('/getSittersByWorkingHours',function(req,res){
     res.status(200).json(SittersData.getSittersByWorkingHours(req.body.workingHours));
 });
@@ -81,21 +80,20 @@ app.post('/getSitterByGender',function(req,res){
 
 app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
     tempJson = new Sitter(req.body);
+    tempJson.timeJoined = moment();//TODO: can use Date.now() - to see later
+
     tempJson.save(function(err , doc){
         if(err)
             console.log(err);// TODO: take care of error
-        else
-        {
+        else{
             console.log('Sitter added');
             SittersData.insertSitter(req.body);
         }
-
         res.status(200).json(req.body); // just for debugging
     });
 });
 
 app.post('/updateSitter' ,function(req,res){ //TODO:  send json in react
-
     var query = Sitter.findOne().where('email',req.body.email);
     query.exec(function(err,doc){
         var query = doc.update({
@@ -137,20 +135,16 @@ app.post('/insertParent' ,function(req,res){ //TODO: send json in react
     tempJson.save(function(err , doc){
         if(err)
             console.log(err);// TODO: take care of error
-        else
-        {
+        else {
             SittersData.insertParent(req.body);
             console.log('parent added');
         }
-
-
         res.status(200).json(req.body); // just for debugging
     });
 });
 
 
 app.post('/updateParent' ,function(req,res){
-
     var query = Parent.findOne().where('email',req.body.email);
     query.exec(function(err,doc){
         var query = doc.update({
@@ -172,7 +166,6 @@ app.post('/updateParent' ,function(req,res){
 });
 
 app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
-
     var query = Parent.findOne().where('email',req.body.email);
     query.exec(function(err,doc){
         var query = doc.remove(function(err,deletedDoc){
@@ -190,39 +183,42 @@ app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
 });
 
 app.post('/insertInvite', function(req,res){
-    var query = Parent.findOne().where('email',req.body.parentEmail);
+    var invite = req.body;
+    invite.uuid = uuid.v1();
+    var query = Parent.findOne().where('email',invite.parentEmail);
     query.exec(function(err,doc){
        var query = doc.update({
-           $push : {invites: req.body}
+           $push : {invites: invite}
        });
          query.exec(function(err,results){
              //TODO: in case of error in internet
         });
     });
 
-    var querySit = Sitter.findOne().where('email',req.body.sitterEmail);
+    var querySit = Sitter.findOne().where('email',invite.sitterEmail);
     querySit.exec(function(err,doc){
         var query = doc.update({
-            $push : {invites: req.body}
+            $push : {invites: invite}
         });
         query.exec(function(err,results){
-            res.status(200).json(SittersData.insertInvite(req.body));
+            res.status(200).json(SittersData.insertInvite(invite));
             //TODO: in case of error in internet
-            // TODO : insert uuid
         });
     });
 });
 
 app.post('/insertReview', function(req,res){
-    var query = Sitter.findOne().where('email',req.body.sitterEmail);
+    var review = req.body;
+    review.uuid = uuid.v1();
+    var query = Sitter.findOne().where('email',review.sitterEmail);
     query.exec(function(err,doc){
         var query = doc.update({
-            $push : {reviews: req.body}
+            $push : {reviews: review}
         });
         query.exec(function(err,results){
-            var rating = SittersData.insertReview(req.body);
+            var rating = SittersData.insertReview(review);
             if ( rating.status == 'updated'){
-                var query = Sitter.findOne().where('email',req.body.sitterEmail);
+                var query = Sitter.findOne().where('email',review.sitterEmail);
                 query.exec(function(err,doc){
                     var query = doc.update({
                         $set : {'rating': rating.rating}
@@ -231,7 +227,7 @@ app.post('/insertReview', function(req,res){
                         console.log('updated rating');
                     })
                 });
-            }// TODO : insert uuid
+            }
             //TODO: in case of error in internet
         });
     });
@@ -253,61 +249,14 @@ app.post('/getInvitesBySitterEmail',function (req,res){
     res.status(200).json(SittersData.getInvitesBySitterEmail(req.body.email));
 });
 
-app.post('/updateInvite' ,function(req,res){
-
+app.post('/updateInvite' ,function(req,res) {
     res.status(200).json(SittersData.updateInvite(req.body));
-    // var query = Invites.findOne().where('uuid',req.body.uuid);
-    // query.exec(function(err,doc){
-    //     var query = doc.update({
-    //         $set : req.body
-    //     });
-    //     query.exec(function(err,results){
-    //         if(err){
-    //             console.log(err);
-    //             res.status(500).json(err);
-    //             //TODO: error
-    //         }
-    //         else {
-    //             res.status(200).json(SittersData.updateInvite(req.body));
-    //             console.log('updated');
-    //         }
-    //     })
-    // });
-    // res.status(200).json(req.body); // just for debugging
+    //TODO: update invite in mongoDB
 });
 
 app.post('/updateReview' ,function(req,res){
-
     res.status(200).json(SittersData.updateReview(req.body));
-    // var query = Invites.findOne().where('uuid',req.body.uuid);
-    // query.exec(function(err,doc){
-    //     var query = doc.update({
-    //         $set : req.body
-    //     });
-    //     query.exec(function(err,results){
-    //         if(err){
-    //             console.log(err);
-    //             res.status(500).json(err);
-    //             //TODO: error
-    //         }
-    //         else {
-    //             res.status(200).json(SittersData.updateInvite(req.body));
-    //             console.log('updated');
-    //         }
-    //     })
-    // });
-    // res.status(200).json(req.body); // just for debugging
-});
-
-app.post('/deleteInvite' ,function(req,res){
-
-    var query = Invites.findOne().where('uuid',req.body.uuid);
-    query.exec(function(err,doc){
-        var query = doc.remove(function(err,deletedDoc){
-            console.log(deletedDoc);
-        });
-    });
-    res.status(200).json(req.body); // just for debugging
+    //TODO: update review in mongoDB
 });
 
 app.get('/', function(req,res){

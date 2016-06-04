@@ -18,7 +18,8 @@ var schema_name = new schema({
         street : String,
         houseNumber : Number
     },
-    picturePath : String,
+    profilePictureURL : String,
+    fullPictureURL : String,
     reviews : [{
         date : String,
         parentName : String,
@@ -43,5 +44,4 @@ var schema_name = new schema({
 }, {collection: 'sitters'});
 
 Sitter = mongoose.model('Sitter', schema_name);
-
 module.exports = Sitter;

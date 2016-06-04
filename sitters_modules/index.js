@@ -215,15 +215,16 @@ class Sitters extends EventEmitter {
         this.on(eventsConfig.INSERTREVIEW, function(review){
             var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
             this.dataSitters[indexSitter].reviews.push(review);
+            resultJSON = {'status':'ok'};
         });
 
         this.on(eventsConfig.GETPARENTFAVORITESSITTERS, function(parent){
             var temp = _.find(this.dataParents,function(parentRes){
                 return parentRes.email == parent.email;
             });
-            temp = _.uniqBy(temp.invites,'sitterEmail'); // uniq invites by sitterEmail
-            temp = _.map(temp, 'sitterEmail'); // set array of uniq sitters email
-            resultJSON =  _.filter(this.dataSitters, item => _.includes(temp, item.email));
+            temp = _.uniqBy(temp.invites,'sitterEmail'); // unique invites by sitterEmail
+            temp = _.map(temp, 'sitterEmail'); // set array of unique sitters email
+            resultJSON =  _.filter(this.dataSitters, item => _.includes(temp, item.email)); // get data of sitter by unique emails
         });
 
         this.on(eventsConfig.GETINVITESBYSITTEREMAIL, function(sitterEmail){
@@ -301,12 +302,11 @@ class Sitters extends EventEmitter {
                     this.dataSitters[sitterIndex].reviews[inviteIndex] = review;
                     console.log(this.dataSitters[sitterIndex].reviews[inviteIndex]);
                     resultJSON = {'status' : "success"};
-                } // TODO: check why local DB not updating
+                } 
             }
             else
                 resultJSON = {'status' : "failed"};
         });
-
     }
 
     authByEmail(email,pass){// TODO:  fix this.
@@ -393,7 +393,7 @@ class Sitters extends EventEmitter {
     }
 
     getLastBookedSitters(){
-
+        // TODO: not implemented yet - will be an option
     }
 
     getParentFavoriteSitters(parent){
@@ -410,13 +410,9 @@ class Sitters extends EventEmitter {
         this.emit(eventsConfig.GETINVITESBYPARENTEMAIL,parent);
         return resultJSON;
     }
-
-    updateStatusById(uuid){
-        //TODO : update in sitters + parents
-    }
-
+    
     getReviewsBySitterEmail(email){
-        this.emit(eventsConfig.GETREVIEWBYSITTEREMAIL,email);
+        this.emit(eventsConfig.GETREVIEWSBYSITTEREMAIL,email);
         return resultJSON; // TODO: take care if resultJSON is null
     }
     
@@ -441,8 +437,6 @@ class Sitters extends EventEmitter {
         this.emit(eventsConfig.UPDATEREVIEW,review);
         return resultJSON;
     }
-
-
 }
 module.exports = Sitters;
 

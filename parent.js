@@ -6,11 +6,15 @@ var schema_name = new schema({
     email : {type : String, index : 1, unique : true , required : true},
     password : {type : String, unique : true , required : true},
     name : String,
+    profilePictureURL : String,
+    fullPictureURL : String,
     partner : String,
     timeJoined : String,
     childes : [{
         name : String,
         age: Number,
+        profilePictureURL : String,
+        fullPicture : String,
         allergies : [String]
     }],
     address : {
@@ -18,7 +22,6 @@ var schema_name = new schema({
         street : String,
         houseNumber : Number
     },
-    picturePath : String,
     invites : [{
         sitterEmail : String,
         parentEmail : String,
@@ -34,5 +37,4 @@ var schema_name = new schema({
 }, {collection: 'parents'});
 
 Parent = mongoose.model('Parent', schema_name);
-
 module.exports = Parent;

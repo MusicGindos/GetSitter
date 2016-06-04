@@ -2,7 +2,7 @@
 
 module.exports = {
     events: {
-        AUTHBYEMAIL : 'authByEmail',
+        AUTHBYEMAIL : 'authByEmail', // TODO: will be implement with G+
 
         //------------------------Parents---------------------------------
         //GET
@@ -15,8 +15,8 @@ module.exports = {
         INSERTPARENT : 'insertParent',
         UPDATEPARENT : 'updateParent',
         DELETEPARENT : 'deleteParent',
-
-        //------------------------Sitters---------------------------------
+        
+        //------------------------Sitters--------------------------------
         //GET
         GETALLSITTERS : 'getAllSitters',
         GETSITTERBYEMAIL: 'getSitterByEmail',
@@ -27,8 +27,7 @@ module.exports = {
         UPDATESITTER : "updateSitter",
         DELETESITTER : "deleteSitter",
         UPDATESITTERRATING : 'updateSitterRating',
-        
-        
+
         //Sitters sorting - GET
         GETTOPRATEDSITTERS : 'getTopRatedSitters',
         GETAVAILABLENOWSITTERS : 'getAvailableNowSitters',
@@ -42,8 +41,8 @@ module.exports = {
         //------------------------Invites---------------------------------
         GETINVITESBYSITTEREMAIL : 'getInvitesBySitterEmail',
         GETINVITESBYPARENTEMAIL : 'getInvitesByParentEmail',
+
         //SET + INSERT
-        UPDATESTATUSBYID : 'updateStatusById',
         INSERTINVITE : 'insertInvite',
         UPDATEINVITE : 'updateInvite',
         
