@@ -21,6 +21,7 @@ mongoose.connect('mongodb://db_usr:db_pass@ds011913.mlab.com:11913/sitters');
 db = mongoose.connection;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
+app.set('json spaces', 4);
 
 
 db.once('connected', function(){
