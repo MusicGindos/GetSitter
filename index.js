@@ -19,9 +19,17 @@ var express = require('express'),
 
 mongoose.connect('mongodb://db_usr:db_pass@ds011913.mlab.com:11913/sitters');
 db = mongoose.connection;
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended:true}));
-app.set('json spaces', 4);
+
+app.use(function (req, res, next) {
+    app.set(bodyParser.json());
+    app.set(bodyParser.urlencoded({ extended:true}));
+    app.set('json spaces', 4);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+
 
 
 db.once('connected', function(){
