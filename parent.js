@@ -2,9 +2,10 @@ var mongoose = require('mongoose'),
     schema = mongoose.Schema,
     Parent;
 
+
 var schema_name = new schema({
-    email : {type : String, index : 1, unique : true , required : true},
-    password : {type : String, unique : true , required : true},
+    email : {type : String, unique : true , required : true},
+    password : {type : String, required : true},
     name : String,
     profilePictureURL : String,
     fullPictureURL : String,

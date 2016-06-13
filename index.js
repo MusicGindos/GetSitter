@@ -10,6 +10,7 @@ var express = require('express'),
     Sitter = require('./sitter'),
     moment = require('moment'),
     Sitters = require('./sitters_modules'),
+    cors = require('cors'),
     db,
     SittersData = null,
     tempJson = null,
@@ -19,17 +20,33 @@ var express = require('express'),
 
 mongoose.connect('mongodb://db_usr:db_pass@ds011913.mlab.com:11913/sitters');
 db = mongoose.connection;
+app.use(bodyParser.json());
+app.use(cors());
 
-app.use(function (req, res, next) {
-    app.set(bodyParser.json());
-    app.set(bodyParser.urlencoded({ extended:true}));
-    app.set('json spaces', 4);
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+//------------------------ delete only if work on client side   -----------------------//
 
+// app.use(function (req, res, next) {
+//    app.set(bodyParser.json());
+//    app.set(bodyParser.urlencoded({ extended:true}));
+//    app.set('json spaces', 4);
+//    res.header("Access-Control-Allow-Origin", "*");
+//    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//    res.set("Content-Type", "application/json");
+//     next();
+// });
 
+// app.use(function(req,res,next){
+//     app.set(bodyParser.json());
+//     app.set(bodyParser.urlencoded({ extended:true}));
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     res.header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+//     app.set('json spaces', 4);
+//     res.set("Content-Type", "application/json");
+//     next();
+// });
+
+//------------------------ delete only if work on client side   -----------------------//
 
 
 db.once('connected', function(){
@@ -41,6 +58,7 @@ db.once('connected', function(){
         tempSitters = sittersData;
         SittersData = new Sitters(tempParents,tempSitters); // get all the json from mongoDB and send it to constructor
     });
+    console.log('done getting data from mongo');
 });
 
 app.get('/getAllParents', function(req,res){
@@ -90,15 +108,16 @@ app.post('/getSitterByGender',function(req,res){
 app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
     tempJson = new Sitter(req.body);
     tempJson.timeJoined = moment();//TODO: can use Date.now() - to see later
-
     tempJson.save(function(err , doc){
-        if(err)
+        if(err) {
             console.log(err);// TODO: take care of error
-        else{
-            console.log('Sitter added');
-            SittersData.insertSitter(req.body);
+            res.status(200).json({'status' : "error"});
         }
-        res.status(200).json(req.body); // just for debugging
+        else {
+            SittersData.insertSitter(req.body);
+            console.log('sitter added');
+            res.status(200).json({'status' : "ok"});
+        }
     });
 });
 
@@ -141,14 +160,20 @@ app.post('/deleteSitter' ,function(req,res){ //TODO:  send json in react
 
 app.post('/insertParent' ,function(req,res){ //TODO: send json in react
     tempJson = new Parent(req.body);
+   // res.json(tempJson);
     tempJson.save(function(err , doc){
-        if(err)
+        if(err) {
             console.log(err);// TODO: take care of error
+            res.status(200).json(err);
+        }
         else {
             SittersData.insertParent(req.body);
             console.log('parent added');
+            // res.header("Access-Control-Allow-Origin", "*");
+            // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            // res.header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+            res.status(200).json({'status' : "ok"});
         }
-        res.status(200).json(req.body); // just for debugging
     });
 });
 
@@ -259,7 +284,11 @@ app.post('/getInvitesBySitterEmail',function (req,res){
 });
 
 app.post('/updateInvite' ,function(req,res) {
-    res.status(200).json(SittersData.updateInvite(req.body));
+    // Task.findById(id, function(err, task) {
+    //     User.findById(task.user, function(err, user) {
+    //         // do stuff with user
+    //     }
+    // }
     //TODO: update invite in mongoDB
 });
 
