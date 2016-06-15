@@ -10,7 +10,7 @@ module.exports = {
         GETPARENTBYEMAIL : 'getParentByEmail',
         GETCHILDESBYEMAIL : 'getChildesByEmail',
         GETCHILDESBYNAME : 'getChildesByName',
-
+        GETFIRSTCHILD :  'getFirstChild',
         //SET
         INSERTPARENT : 'insertParent',
         UPDATEPARENT : 'updateParent',
