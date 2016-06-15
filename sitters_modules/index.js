@@ -272,6 +272,17 @@ class Sitters extends EventEmitter {
                 resultJSON = {'error' : 'reviews not founds'}
         });
 
+        this.on(eventsConfig.GETFIRSTCHILD, function(parentEmail){
+            resultJSON = null;
+            resultJSON = _.find(this.dataParents, function (parent) {
+                return parent.email == parentEmail;
+            });
+            if (resultJSON == null)
+                resultJSON = {'Error': 'Parent does no exist'};
+            else
+                resultJSON = resultJSON.childes[0];
+        });
+
         this.on(eventsConfig.UPDATEINVITE, function(invite){
             var parentIndex = _.findIndex(this.dataParents, function(res) { return res.email == invite.parentEmail; });
             if(parentIndex != null ){
@@ -423,6 +434,10 @@ class Sitters extends EventEmitter {
 
     updateInvite(invite){
         this.emit(eventsConfig.UPDATEINVITE,invite);
+        return resultJSON;
+    }
+    getFirstChild(email){
+        this.emit(eventsConfig.GETFIRSTCHILD,email);
         return resultJSON;
     }
 

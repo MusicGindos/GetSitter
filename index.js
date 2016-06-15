@@ -23,31 +23,6 @@ db = mongoose.connection;
 app.use(bodyParser.json());
 app.use(cors());
 
-//------------------------ delete only if work on client side   -----------------------//
-
-// app.use(function (req, res, next) {
-//    app.set(bodyParser.json());
-//    app.set(bodyParser.urlencoded({ extended:true}));
-//    app.set('json spaces', 4);
-//    res.header("Access-Control-Allow-Origin", "*");
-//    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//    res.set("Content-Type", "application/json");
-//     next();
-// });
-
-// app.use(function(req,res,next){
-//     app.set(bodyParser.json());
-//     app.set(bodyParser.urlencoded({ extended:true}));
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     res.header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-//     app.set('json spaces', 4);
-//     res.set("Content-Type", "application/json");
-//     next();
-// });
-
-//------------------------ delete only if work on client side   -----------------------//
-
 
 db.once('connected', function(){
     console.log('getting data from mongoDB');
@@ -60,6 +35,8 @@ db.once('connected', function(){
     });
     console.log('done getting data from mongo');
 });
+
+
 
 app.get('/getAllParents', function(req,res){
     res.status(200).json(SittersData.getAllParents());
@@ -119,6 +96,10 @@ app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
             res.status(200).json({'status' : "ok"});
         }
     });
+});
+
+app.post('/getFirstChild',function(req,res){
+    res.status(200).json(SittersData.getFirstChild(req.body.email));
 });
 
 app.post('/updateSitter' ,function(req,res){ //TODO:  send json in react
