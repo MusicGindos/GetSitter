@@ -1,5 +1,8 @@
 'use strict';
 
+//TODO: add  null check on all arrays
+
+
 var EventEmitter = require('events').EventEmitter,
     express = require('express'),
     eventsConfig = require('./config').events,

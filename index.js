@@ -23,6 +23,14 @@ db = mongoose.connection;
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use(function(req,res,next){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    app.set('json spaces', 4);
+    res.set("Content-Type", "application/json");
+    next();
+});
+
 
 db.once('connected', function(){
     console.log('getting data from mongoDB');
