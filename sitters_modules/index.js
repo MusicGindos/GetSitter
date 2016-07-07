@@ -185,12 +185,13 @@ class Sitters extends EventEmitter {
             var workingHoursSitter = _.find(this.dataSitters,function(sitter) {
                 return sitter.workingHours == workingHours;
             });
+
             var workingHoursAllDay = _.find(this.dataSitters,function(sitter){
                 return sitter.workingHours == "All day";
             });
 
             // concat merge 2 arrays into 1, and uniq make only unique jsons, in case that sitter work all day + evenings/mornings
-            resultJSON = _.uniq(_.concat(workingHoursSitter,workingHoursAllDay));
+            resultJSON = _.compact(_.uniq(_.concat(workingHoursSitter,workingHoursAllDay)));
             if (resultJSON == null){
                 resultJSON = {'status' : 'false'};
             }
