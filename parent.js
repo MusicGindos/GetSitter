@@ -14,6 +14,7 @@ var schema_name = new schema({
     childes : [{
         name : String,
         age: Number,
+        _id: schema.Types.ObjectId,    // must have field for child _id
         profilePictureURL : String,
         allergies : [String]
     }],
