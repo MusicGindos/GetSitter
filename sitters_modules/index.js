@@ -38,6 +38,8 @@ class Sitters extends EventEmitter {
             if ( resultJSON == null){
                 resultJSON = {'Error' : 'Parent does no exist'};
             }
+            else
+                resultJSON = _.compact(resultJSON); //  delete all null/0/false from array
         });
         
         this.on(eventsConfig.GETCHILDESBYEMAIL,function(parentEmail) {
@@ -48,7 +50,7 @@ class Sitters extends EventEmitter {
             if (result == null)
                 result = {'Error': 'Parent does no exist'};
             else
-                this.result = result.childes;
+                this.result = _.compact(result.childes); //  delete all null/0/false from array
         });
 
         this.on(eventsConfig.GETCHILDESBYNAME,function(parentName){
@@ -59,7 +61,7 @@ class Sitters extends EventEmitter {
             if (result == null)
                 result = {'Error': 'Parent does no exist'};
             else
-                this.result = result.childes;
+                this.result = _.compact(result.childes); //  delete all null/0/false from array
         });
 
         this.on(eventsConfig.GETSITTERBYEMAIL,function(sitterEmail){
@@ -85,6 +87,7 @@ class Sitters extends EventEmitter {
             resultJSON.sort(function(a, b){
                 return a.rating - b.rating;
             });
+            resultJSON = _.compact(resultJSON);
         });
 
         this.on(eventsConfig.GETSITTERBYGENDER,function(gender){
@@ -94,6 +97,8 @@ class Sitters extends EventEmitter {
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
+            else
+                resultJSON = _.compact(resultJSON);
         });
 
         this.on(eventsConfig.INSERTPARENT,function(parent){
@@ -178,6 +183,8 @@ class Sitters extends EventEmitter {
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Siters does not exist'};
             }
+            else
+                resultJSON = _.compact(resultJSON);
         });
 
         this.on(eventsConfig.GETAVAILABLENOWSITTERS, function(){
@@ -206,6 +213,8 @@ class Sitters extends EventEmitter {
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
+            else
+                resultJSON = _.compact(resultJSON);
         });
 
         this.on(eventsConfig.INSERTINVITE, function(invite){
@@ -229,6 +238,8 @@ class Sitters extends EventEmitter {
             temp = _.uniqBy(temp.invites,'sitterEmail'); // unique invites by sitterEmail
             temp = _.map(temp, 'sitterEmail'); // set array of unique sitters email
             resultJSON =  _.filter(this.dataSitters, item => _.includes(temp, item.email)); // get data of sitter by unique emails
+            if (resultJSON != null)
+                resultJSON = _.compact(resultJSON);
         });
 
         this.on(eventsConfig.GETINVITESBYSITTEREMAIL, function(sitterEmail){
@@ -242,7 +253,7 @@ class Sitters extends EventEmitter {
 
             if (temp != null){
                 temp = temp.invites;
-                resultJSON = temp;
+                resultJSON = _.compact(temp);
             }
             else
                 resultJSON = {'error' : 'invites not founds'}
@@ -256,7 +267,7 @@ class Sitters extends EventEmitter {
             temp = temp[Object.keys(temp)[0]];
             if (temp != null){
                 temp = temp.invites;
-                resultJSON = temp;
+                resultJSON = _.compact(temp);
             }
             else
                 resultJSON = {'error' : 'invites not founds'}
@@ -270,7 +281,7 @@ class Sitters extends EventEmitter {
             temp = temp[Object.keys(temp)[0]];
             if (temp != null){
                 temp = temp.reviews;
-                resultJSON = temp;
+                resultJSON = _.compact(temp);
             }
             else
                 resultJSON = {'error' : 'reviews not founds'}
