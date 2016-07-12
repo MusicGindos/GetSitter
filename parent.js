@@ -2,6 +2,18 @@ var mongoose = require('mongoose'),
     schema = mongoose.Schema,
     Parent;
 
+var Invites = new schema({
+    sitterEmail : String,
+    parentEmail : String,
+    street : String,
+    date : String,
+    recurring : String ,
+    startTime : String,
+    endTime : String,
+    uuid : String,
+    allergies : [String],
+    status : String
+});
 
 var schema_name = new schema({
     email : {type : String, unique : true , required : true},
@@ -23,18 +35,7 @@ var schema_name = new schema({
         street : String,
         houseNumber : Number
     },
-    invites : [{
-        sitterEmail : String,
-        parentEmail : String,
-        street : String,
-        date : String,
-        recurring : String ,
-        startTime : String,
-        endTime : String,
-        uuid : String,
-        allergies : [String],
-        status : String
-    }]
+    invites : [Invites]
 }, {collection: 'parents'});
 
 Parent = mongoose.model('Parent', schema_name);
