@@ -46,6 +46,7 @@ db.once('connected', function(){
 
 
 
+
 app.get('/getAllParents', function(req,res){
     res.status(200).json(SittersData.getAllParents());
 });
@@ -89,6 +90,25 @@ app.post('/getSittersByWorkingHours',function(req,res){
 app.post('/getSitterByGender',function(req,res){
     res.status(200).json(SittersData.getSitterByGender(req.body.gender));
 });
+
+
+app.post('/getUser', function(req,res){
+    var temp = SittersData.getParentByEmail(req.body.email);
+    if(!temp.Error) { // no parent found
+        temp["isParent"] = "true";
+        res.status(200).json(temp.isParent);
+    }
+    else{
+        temp = SittersData.getSitterByEmail(req.body.email);
+        if(!temp.Error) { // no parent found
+            temp.isParent = "false";
+            res.status(200).json(temp);
+        }
+        else
+            res.status(200).json({"Error" : "No such a user found"});
+    }
+});
+
 
 app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
     tempJson = new Sitter(req.body);
@@ -157,10 +177,6 @@ app.post('/insertParent' ,function(req,res){ //TODO: send json in react
         }
         else {
             SittersData.insertParent(req.body);
-            console.log('parent added');
-            // res.header("Access-Control-Allow-Origin", "*");
-            // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            // res.header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
             res.status(200).json({'status' : "ok"});
         }
     });
@@ -207,7 +223,8 @@ app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
 
 app.post('/insertInvite', function(req,res){
     var invite = req.body;
-    invite.uuid = uuid.v1();
+    if(!req.body.uuid)
+        invite.uuid = uuid.v1();
     var query = Parent.findOne().where('email',invite.parentEmail);
     query.exec(function(err,doc){
        var query = doc.update({
@@ -248,6 +265,7 @@ app.post('/insertReview', function(req,res){
                     });
                     query.exec(function(err,results){
                         console.log('updated rating');
+                        res.json({'status' : 'ok'});
                     })
                 });
             }
@@ -273,12 +291,16 @@ app.post('/getInvitesBySitterEmail',function (req,res){
 });
 
 app.post('/updateInvite' ,function(req,res) {
-    // Task.findById(id, function(err, task) {
-    //     User.findById(task.user, function(err, user) {
-    //         // do stuff with user
-    //     }
-    // }
-    //TODO: update invite in mongoDB
+    SittersData.updateInvite(req.body);
+    Parent.collection.update({"invites.uuid": req.body.uuid}, {$set : {"invites.$": req.body}}, function (error, result) {
+        if(error)
+            res.json({'Status' : 'error'});
+    });
+    Sitter.collection.update({"invites.uuid": req.body.uuid}, {$set : {"invites.$": req.body}}, function (error, result) {
+        if(error)
+            res.json({'Status' : 'error'});
+    });
+    res.status(200).json({'status' : 'updated'});
 });
 
 app.post('/updateReview' ,function(req,res){
@@ -296,4 +318,4 @@ app.all('*', function(req,res){
 
 http.createServer(app).listen(port);
 console.log('server is on');
-console.log('listening on port' + port);
+console.log('listening on port ' + port);

@@ -38,8 +38,6 @@ class Sitters extends EventEmitter {
             if ( resultJSON == null){
                 resultJSON = {'Error' : 'Parent does no exist'};
             }
-            else
-                resultJSON = _.compact(resultJSON); //  delete all null/0/false from array
         });
         
         this.on(eventsConfig.GETCHILDESBYEMAIL,function(parentEmail) {
@@ -49,8 +47,6 @@ class Sitters extends EventEmitter {
             });
             if (result == null)
                 result = {'Error': 'Parent does no exist'};
-            else
-                this.result = _.compact(result.childes); //  delete all null/0/false from array
         });
 
         this.on(eventsConfig.GETCHILDESBYNAME,function(parentName){
@@ -60,8 +56,6 @@ class Sitters extends EventEmitter {
             });
             if (result == null)
                 result = {'Error': 'Parent does no exist'};
-            else
-                this.result = _.compact(result.childes); //  delete all null/0/false from array
         });
 
         this.on(eventsConfig.GETSITTERBYEMAIL,function(sitterEmail){

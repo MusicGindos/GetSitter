@@ -2,6 +2,19 @@ var mongoose = require('mongoose'),
     schema = mongoose.Schema,
     Sitter;
 
+var Invites = new schema({
+    sitterEmail : String,
+    parentEmail : String,
+    street : String,
+    date : String,
+    recurring : String ,
+    startTime : String,
+    endTime : String,
+    uuid : String,
+    allergies : [String],
+    status : String
+});
+
 var schema_name = new schema({
     email : {type : String, index : 1, unique : true , required : true},
     password : String,
@@ -29,18 +42,7 @@ var schema_name = new schema({
         rating : Number,
         review : String
     }],
-    invites : [{
-        sitterEmail : String,
-        parentEmail : String,
-        street : String,
-        date : String,
-        recurring : String ,
-        startTime : String,
-        endTime : String,
-        uuid : String,
-        allergies : [String],
-        status : String
-    }]
+    invites : [Invites]
 }, {collection: 'sitters'});
 
 Sitter = mongoose.model('Sitter', schema_name);
