@@ -17,7 +17,6 @@ var Invites = new schema({
 
 var schema_name = new schema({
     email : {type : String, unique : true , required : true},
-    password : {type : String},
     name : String,
     profilePictureURL : String,
     fullPictureURL : String,
