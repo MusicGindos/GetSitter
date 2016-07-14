@@ -32,7 +32,7 @@ class Sitters extends EventEmitter {
         });
 
         this.on(eventsConfig.GETPARENTBYEMAIL,function(parentEmail){
-            resultJSON = _.find(this.dataParents,function(parent){
+            resultJSON = _.find(_.compact(this.dataParents),function(parent){
                 return parent.email == parentEmail;
             });
             if ( resultJSON == null){
