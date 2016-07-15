@@ -91,8 +91,6 @@ class Sitters extends EventEmitter {
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
-            else
-                resultJSON = _.compact(resultJSON);
         });
 
         this.on(eventsConfig.INSERTPARENT,function(parent){
