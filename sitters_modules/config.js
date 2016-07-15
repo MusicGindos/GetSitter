@@ -21,6 +21,7 @@ module.exports = {
         GETALLSITTERS : 'getAllSitters',
         GETSITTERBYEMAIL: 'getSitterByEmail',
         GETSITTERSBYNAME : 'getSittersByName',
+        GETSITTERSBYRATING : 'getSittersByRating',
 
         //SET + INSERT
         INSERTSITTER : "insertSitter",

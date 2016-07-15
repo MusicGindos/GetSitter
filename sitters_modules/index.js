@@ -1,6 +1,5 @@
 'use strict';
 
-//TODO: add  null check on all arrays
 
 
 var EventEmitter = require('events').EventEmitter,
@@ -42,7 +41,7 @@ class Sitters extends EventEmitter {
         
         this.on(eventsConfig.GETCHILDESBYEMAIL,function(parentEmail) {
             result = null;
-            result = _.find(this.dataParents, function (parent) {
+            result = _.filter(this.dataParents, function (parent) {
                 return parent.email == parentEmail;
             });
             if (result == null)
@@ -51,7 +50,7 @@ class Sitters extends EventEmitter {
 
         this.on(eventsConfig.GETCHILDESBYNAME,function(parentName){
             result = null;
-            result = _.find(this.dataParents, function (parent) {
+            result = _.filter(this.dataParents, function (parent) {
                 return parent.name == parentName;
             });
             if (result == null)
@@ -76,18 +75,8 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.GETTOPRATEDSITTERS,function(){
-            resultJSON = this.dataSitters;
-            resultJSON.sort(function(a, b){
-                return a.rating - b.rating;
-            });
-            resultJSON = _.compact(resultJSON);
-        });
-
         this.on(eventsConfig.GETSITTERBYGENDER,function(gender){
-            resultJSON = _.pickBy(this.dataSitters, function(sitter) {
-                return sitter.gender == gender;
-            });
+            resultJSON = _.filter(this.dataSitters, function(obj) { return obj.gender == gender; });
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
@@ -184,11 +173,12 @@ class Sitters extends EventEmitter {
             var workingHours;
             workingHours = time >= 6 && time <= 14?"Mornings":"Evenings";
 
-            var workingHoursSitter = _.find(this.dataSitters,function(sitter) {
+
+            var workingHoursSitter = _.filter(this.dataSitters,function(sitter) {
                 return sitter.workingHours == workingHours;
             });
 
-            var workingHoursAllDay = _.find(this.dataSitters,function(sitter){
+            var workingHoursAllDay = _.filter(this.dataSitters,function(sitter){
                 return sitter.workingHours == "All day";
             });
 
@@ -199,7 +189,7 @@ class Sitters extends EventEmitter {
             }
         });
         this.on(eventsConfig.GETSITTERSBYWORKINGHOURS, function(workingHours){
-            resultJSON = _.find(this.dataSitters,function(sitter) {
+            resultJSON = _.filter(this.dataSitters,function(sitter) {
                 return sitter.workingHours == workingHours;
             });
             if(resultJSON == null) {
@@ -207,6 +197,15 @@ class Sitters extends EventEmitter {
             }
             else
                 resultJSON = _.compact(resultJSON);
+        });
+
+        this.on(eventsConfig.GETSITTERSBYRATING, function(rating) {
+            resultJSON = _.filter(this.dataSitters, function (sitter) {
+                return sitter.rating >= rating;
+            });
+            if (resultJSON == null) {
+                resultJSON = {'Error': 'Sitter does not exist'};
+            }
         });
 
         this.on(eventsConfig.INSERTINVITE, function(invite){
@@ -235,7 +234,6 @@ class Sitters extends EventEmitter {
         });
 
         this.on(eventsConfig.GETINVITESBYSITTEREMAIL, function(sitterEmail){
-            console.log(sitterEmail);
             var temp;
             temp = _.pickBy(this.dataSitters, function(sitter) {
                 return sitter.email == sitterEmail;
@@ -383,7 +381,11 @@ class Sitters extends EventEmitter {
         return resultJSON;
     }
     
-    
+    getSittersByRating(rating){
+        this.emit(eventsConfig.GETSITTERSBYRATING,rating);
+        return resultJSON;
+    }
+
     insertParent(parent) {
         this.emit(eventsConfig.INSERTPARENT, parent);
         return resultJSON;
