@@ -12,7 +12,8 @@ var Invites = new schema({
     endTime : String,
     uuid : String,
     allergies : [String],
-    status : String
+    status : String,
+    msg: String
 });
 
 var schema_name = new schema({
