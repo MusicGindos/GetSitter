@@ -135,17 +135,18 @@ Sitter json example:
 
 GET /getAllParents
 
-Example: getasitter.herokuapp.com/getAllParents
+Example: sitters-ws.herokuapp.com/getAllParents
 
 Response body:
 
 ```sh
+
   ...
 ```
 
 POST /getParentByEmail/[email]
 
-Example: getasitter.herokuapp.com/getParentByEmail
+Example: sitters-ws.herokuapp.com/getParentByEmail
 Request body:
 
 Response body:
@@ -156,7 +157,7 @@ Response body:
 
 POST /getChildesByEmail/[email]
 
-Example: getasitter.herokuapp.com/getChildesByEmail
+Example: sitters-ws.herokuapp.com/getChildesByEmail
 
 Request body:
 
@@ -168,7 +169,7 @@ Response body:
 
 POST /getChildesByName/[name]
 
-Example: getasitter.herokuapp.com/getChildesByName
+Example: sitters-ws.herokuapp.com/getChildesByName
 
 Request body:
 
@@ -180,96 +181,160 @@ Response body:
 
 GET /getAllSitters
 
-Example: getasitter.herokuapp.com/getAllSitters
+Example: sitters-ws.herokuapp.com/getAllSitters
 
 Response body:
 
 ```sh
+[
+{
+_id: "578ac1edc035910300faaf13",
+name: "Dassi Rosen",
+password: "eyJhbGc",
+email: "dassi.rosen@gmail.com",
+profilePictureURL: "https://lh3.googleusercontent.com/-ig1dpe9IVu8/AAAAAAAAAAI/AAAAAAAAAEs/WIoPZ5BmoeI/s96-c/photo.jpg",
+partner: "partner",
+__v: 0,
+invites: [
+{
+sitterEmail: "sitter1@gmail.com",
+parentEmail: "dassi.rosen@gmail.com",
+street: "ss 5 cc",
+date: "2016-07-04",
+startTime: "16:50",
+endTime: "16:50",
+recurring: "weekly",
+uuid: "f0b742b0-4bb3-11e6-8c3f-319824265bfb",
+_id: "578acec1ac9d490300b5fa8e",
+allergies: [
+"dfssdf"
+]
+},
+{
+sitterEmail: "sitter1@gmail.com",
+parentEmail: "dassi.rosen@gmail.com",
+street: "ss 5 cc",
+date: "2016-07-04",
+startTime: "16:50",
+endTime: "16:50",
+msg: "sdasdasdasdasdsdsd",
+recurring: "monthly",
+uuid: "49340040-4bb4-11e6-8c3f-319824265bfb",
+_id: "578acf55ac9d490300b5fa92",
+allergies: [
+"dd"
+]
+}
+],
+address: {
+city: "city",
+street: "street",
+houseNumber: 3
+},
+childes: [
+{
+name: "dasdjhakjsdhyoel",
+age: 5,
+allergies: [
+"abc, hhh, mmm"
+]
+}
+]
+}
+]
   ...
 ```
 
 POST /getSitterByEmail/[email]
 
-Example: getasitter.herokuapp.com/getSitterByEmail
+Example: sitters-ws.herokuapp.com/getSitterByEmail
 Request body:
+    "email" : "sitterEmail"
 
 Response body:
 
-```sh
-  ...
-```
+Will return all sitters
 
 POST /getSitterByName/[name]
 
-Example: getasitter.herokuapp.com/getSitterByName
+Example: sitters-ws.herokuapp.com/getSitterByName
 Request body:
-
+    { "name" : "<sitter-name>"
 Response body:
 
-```sh
-  ...
-```
+return 1 sitter with email
 
 GET /getTopRatedSitters
 
-Example: getasitter.herokuapp.com/getTopRatedSitters
+Example: sitters-ws.herokuapp.com/getTopRatedSitters
 
 Response body:
 
-```sh
-  ...
-```
+return all sitters by rting from top to low
 
 GET /getAvailableNowSitters
 
-Example: getasitter.herokuapp.com/getAvailableNowSitters
+Example: sitters-ws.herokuapp.com/getAvailableNowSitters
 
 Response body:
 
-```sh
-  ...
-```
+return all available now sitters
 
 POST /getSittersByWorkingHours/[workingHours]
 
-Example: getasitter.herokuapp.com/getSittersByWorkingHours
+Example: sitters-ws.herokuapp.com/getSittersByWorkingHours
 Request body:
 
-Response body:
+{ "workingHours" : "Mornings" / Evenings / All day"}
 
-```sh
-  ...
-```
+Response body:re
+return all sitters by working hours
+
+
 POST /getSitterByGender/[gender]
 
-Example: getasitter.herokuapp.com/getSitterByGender
+Example: sitters-ws.herokuapp.com/getSitterByGender
 Request body:
+{
+    "gender" : "female / male"
+}
 
 Response body:
+return all sitters by  gender
 
-```sh
-  ...
-```
 
 
 POST /insertSitter/[sitter]
 
-Example: getasitter.herokuapp.com/insertSitter
+Example: sitters-ws.herokuapp.com/insertSitter
 Request body:
+{
+```sh
+            "sitterEmail": "SITTER EMAIL",
+            "parentEmail": "PARENT EMAIL",
+            "street": "LOLE 14 TEL AVIV",
+            "date": "2016-07-04",
+            "startTime": "16:50",
+            "endTime": "16:50",
+            "recurring": "weekly",
+            "allergies": [
+                "apple", "banana"
+]
+  ...
+```
+}
 
 Response body:
 
-```sh
-  ...
-```
+status: ok
 
 POST /updateSitter/[sitter]
 
-Example: getasitter.herokuapp.com/updateSitter
+Example: sitters-ws.herokuapp.com/updateSitter
 Request body:
 
 Response body:
-
+status: ok or error
 ```sh
   ...
 ```
@@ -277,11 +342,11 @@ Response body:
 
 POST /deleteSitter/[sitter]
 
-Example: getasitter.herokuapp.com/deleteSitter
+Example: sitters-ws.herokuapp.com/deleteSitter
 Request body:
 
 Response body:
-
+status: ok or error
 ```sh
   ...
 ```
@@ -289,30 +354,31 @@ Response body:
 
 POST /insertParent/[parent]
 
-Example: getasitter.herokuapp.com/insertParent
+Example: sitters-ws.herokuapp.com/insertParent
 Request body:
 
 Response body:
-
+status: ok or error
 ```sh
   ...
 ```
 
 POST /updateParent/[parent]
 
-Example: getasitter.herokuapp.com/updateParent
+Example: sitters-ws.herokuapp.com/updateParent
 Request body:
 
 Response body:
 
 ```sh
+status: ok or error
   ...
 ```
 
 
 POST /deleteParent/[parent]
 
-Example: getasitter.herokuapp.com/deleteParent
+Example: sitters-ws.herokuapp.com/deleteParent
 Request body:
 
 Response body:
@@ -323,7 +389,7 @@ Response body:
 
 POST /insertReview/[review]
 
-Example: getasitter.herokuapp.com/insertReview
+Example: sitters-ws.herokuapp.com/insertReview
 Request body:
 
 Response body:
@@ -334,45 +400,37 @@ Response body:
 
 POST /updateReview/[review]
 
-Example: getasitter.herokuapp.com/updateReview
+Example: sitters-ws.herokuapp.com/updateReview
 Request body:
 
 Response body:
-
-```sh
-  ...
-```
+status: ok or error
 
 POST /insertInvite/[invite]
 
-Example: getasitter.herokuapp.com/insertInvite
+Example: sitters-ws.herokuapp.com/insertInvite
 Request body:
 
 Response body:
+status: ok or error
 
-```sh
-  ...
-```
 
 POST /updateInvite/[invite]
 
-Example: getasitter.herokuapp.com/updateInvite
+Example: sitters-ws.herokuapp.com/updateInvite
 Request body:
 
 Response body:
-
-```sh
-  ...
-```
+stauts : ok ot no
 
 
 POST /getReviewsBySitterEmail/[review]
 
-Example: getasitter.herokuapp.com/getReviewsBySitterEmail
+Example: sitters-ws.herokuapp.com/getReviewsBySitterEmail
 Request body:
 
 Response body:
-
+array of selected reviews
 ```sh
   ...
 ```
@@ -383,31 +441,26 @@ Example: getasitter.herokuapp.com/getParentFavoriteSitters
 Request body:
 
 Response body:
-
+array of filtered reviews
 ```sh
   ...
 ```
 
 POST /getInvitesByParentEmail/[parent]
 
-Example: getasitter.herokuapp.com/getInvitesByParentEmail
+Example: sitters-ws.herokuapp.com/getInvitesByParentEmail
 Request body:
 
 Response body:
 
-```sh
-  ...
-```
+`array of invites or error
 
 POST /getInvitesBySitterEmail/[sitter]
 
-Example: getasitter.herokuapp.com/getInvitesBySitterEmail
+Example: sitters-ws.herokuapp.com/getInvitesBySitterEmail
 Request body:
 
 Response body:
-
-```sh
-  ...
-```
+error : get 1 parent by email
 
 
