@@ -83,7 +83,7 @@ class Sitters extends EventEmitter {
         });
 
         this.on(eventsConfig.INSERTPARENT,function(parent){
-            this.dataParents[this.dataParents.length + 1] = parent;
+            this.dataParents[this.dataParents.length] = parent;
             if (parent != null )
                 resultJSON = {'status' : 'true'};
             else
@@ -113,7 +113,7 @@ class Sitters extends EventEmitter {
         });
 
         this.on(eventsConfig.INSERTSITTER,function(sitter){
-            this.dataSitters[this.dataSitters.length + 1] = sitter;
+            this.dataSitters[this.dataSitters.length] = sitter;
             if (sitter != null )
                 resultJSON = {'status' : 'true'};
             else

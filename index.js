@@ -171,9 +171,8 @@ app.post('/deleteSitter' ,function(req,res){ //TODO:  send json in react
     });
 });
 
-app.post('/insertParent' ,function(req,res){ //TODO: send json in react
+app.post('/insertParent' ,function(req,res){ 
     tempJson = new Parent(req.body);
-   // res.json(tempJson);
     tempJson.save(function(err , doc){
         if(err) {
             console.log(err);// TODO: take care of error
