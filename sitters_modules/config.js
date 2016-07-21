@@ -33,7 +33,7 @@ module.exports = {
         GET_TOP_RATED_SITTERS : 'getTopRatedSitters',
         GET_AVAILABLE_NOW_SITTERS : 'getAvailableNowSitters',
         GET_SITTERS_BY_WORKING_HOURS : 'getSittersByWorkingHours',
-        GET_SITTERS_BY_GENDER : 'getSittersByGender',
+        GET_SITTER_BY_GENDER : 'getSitterByGender',
 
         GET_LAST_BOOKED_SITTERS : 'getLastBookedSitters',
         GET_PARENT_FAVORITE_SITTERS : 'getParentFavoriteSitters',

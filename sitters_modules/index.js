@@ -74,7 +74,7 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.GET_SITTERS_BY_GENDER,function(gender){
+        this.on(eventsConfig.GET_SITTER_BY_GENDER,function(gender){
             resultJSON = _.filter(this.dataSitters, function(obj) { return obj.gender == gender; });
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
@@ -375,8 +375,8 @@ class Sitters extends EventEmitter {
     updateSitterRating(email){
         this.emit(eventsConfig.UPDATE_SITTER_RATING, email);
     }
-    getSittersByGender(gender){
-        this.emit(eventsConfig.GET_SITTERS_BY_GENDER,gender);
+    getSitterByGender(gender){
+        this.emit(eventsConfig.GET_SITTER_BY_GENDER,gender);
         return resultJSON;
     }
     
