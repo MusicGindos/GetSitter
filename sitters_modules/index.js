@@ -337,11 +337,11 @@ class Sitters extends EventEmitter {
         this.emit(eventsConfig.GET_PARENT_BY_EMAIL,email);
         return resultJSON; // TODO: take care if resultJSON is null
     }
-    getChildesByEmail(email){
+    getChildByEmail(email){
         this.emit(eventsConfig.GET_CHILD_BY_EMAIL,email);
         return this.result; // TODO: take care if resultJSON is null
     }
-    getChildesByName(name){
+    getChildByName(name){
         this.emit(eventsConfig.GET_CHILD_BY_NAME,name);
         return this.result; // TODO: take care if resultJSON is null
     }
