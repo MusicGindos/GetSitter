@@ -85,8 +85,8 @@ app.post('/getSittersByWorkingHours', function (req, res) {
     res.status(200).json(SittersData.getSittersByWorkingHours(req.body.workingHours));
 });
 
-app.post('/getSittersByGender', function (req, res) {
-    res.status(200).json(SittersData.getSittersByGender(req.body.gender));
+app.post('/getSitterByGender', function (req, res) {
+    res.status(200).json(SittersData.getSitterByGender(req.body.gender));
 })
 
 app.post('/getSittersByRating', function (req, res) {
