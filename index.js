@@ -16,14 +16,14 @@ var express = require('express'),
     tempJson = null,
     tempParents,
     tempSitters;
-    moment().format();
+moment().format();
 
 mongoose.connect('mongodb://db_usr:db_pass@ds027215.mlab.com:27215/sitters');
 db = mongoose.connection;
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(function(req,res,next){
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     app.set('json spaces', 4);
@@ -32,116 +32,114 @@ app.use(function(req,res,next){
 });
 
 
-db.once('connected', function(){
+db.once('connected', function () {
     console.log('getting data from mongoDB');
-    Parent.find({}, function(err,sittersData){
+    Parent.find({}, function (err, sittersData) {
         tempParents = sittersData;
     });
-    Sitter.find({}, function(err,sittersData){
+    Sitter.find({}, function (err, sittersData) {
         tempSitters = sittersData;
-        SittersData = new Sitters(tempParents,tempSitters); // get all the json from mongoDB and send it to constructor
+        SittersData = new Sitters(tempParents, tempSitters); // get all the json from mongoDB and send it to the ctor
     });
     console.log('done getting data from mongo');
 });
 
 
-
-
-app.get('/getAllParents', function(req,res){
+app.get('/getAllParents', function (req, res) {
     res.status(200).json(SittersData.getAllParents());
 });
 
-app.post('/getParentByEmail',function (req,res){
+app.post('/getParentByEmail', function (req, res) {
     res.status(200).json(SittersData.getParentByEmail(req.body.email));
 });
 
-app.post('/getChildesByEmail',function (req,res){
-    res.status(200).json(SittersData.getChildesByEmail(req.body.email));
+app.post('/getChildByEmail', function (req, res) {
+    res.status(200).json(SittersData.getChildByEmail(req.body.email));
 });
 
-app.post('/getChildesByName',function (req,res){
-    res.status(200).json(SittersData.getChildesByName(req.body.name));
+app.post('/getChildByName', function (req, res) {
+    res.status(200).json(SittersData.getChildByName(req.body.name));
 });
 
-app.get('/getAllSitters',function(req,res){
+app.get('/getAllSitters', function (req, res) {
     res.status(200).json(SittersData.getAllSitters(req.body.email));
 });
 
-app.post('/getSitterByEmail' ,function(req,res){ //TODO:  send json in react
+app.post('/getSitterByEmail', function (req, res) { //TODO:  send json in react
     res.status(200).json(SittersData.getSitterByEmail(req.body.email));
 });
 
-app.post('/getSitterByName' ,function(req,res){ //TODO:  send json in react
+app.post('/getSitterByName', function (req, res) { //TODO:  send json in react
     res.status(200).json(SittersData.getSitterByName(req.body.name));
 });
 
-app.get('/getTopRatedSitters',function(req,res){
+app.get('/getTopRatedSitters', function (req, res) {
     res.status(200).json(SittersData.getTopRatedSitters());
 });
 
-app.get('/getAvailableNowSitters',function(req,res){
+app.get('/getAvailableNowSitters', function (req, res) {
     res.status(200).json(SittersData.getAvailableNowSitters());
 });
 
-app.post('/getSittersByWorkingHours',function(req,res){
+app.post('/getSittersByWorkingHours', function (req, res) {
     res.status(200).json(SittersData.getSittersByWorkingHours(req.body.workingHours));
 });
 
-app.post('/getSitterByGender',function(req,res){
-    res.status(200).json(SittersData.getSitterByGender(req.body.gender));
+app.post('/getSittersByGender', function (req, res) {
+    res.status(200).json(SittersData.getSittersByGender(req.body.gender));
 })
 
-app.post('/getSittersByRating',function(req,res){
+app.post('/getSittersByRating', function (req, res) {
     res.status(200).json(SittersData.getSittersByRating(req.body.rating));
 });
 
 
-app.post('/getUser', function(req,res){
+app.post('/getUser', function (req, res) {
     var temp = SittersData.getParentByEmail(req.body.email);
-    if(!temp.Error) { // no parent found
+    if (!temp.Error) { // no parent found
         temp["isParent"] = "true";
         res.status(200).json(temp.isParent);
     }
-    else{
+    else {
         temp = SittersData.getSitterByEmail(req.body.email);
-        if(!temp.Error) { // no parent found
+        if (!temp.Error) { // no parent found
             temp.isParent = "false";
             res.status(200).json(temp);
         }
         else
-            res.status(200).json({"Error" : "No such a user found"});
+            res.status(200).json({"Error": "No such a user found"});
     }
 });
 
 
-app.post('/insertSitter' ,function(req,res){ //TODO:  send json in react
+app.post('/insertSitter', function (req, res) { //TODO:  send json in react
     tempJson = new Sitter(req.body);
     tempJson.timeJoined = moment();//TODO: can use Date.now() - to see later
-    tempJson.save(function(err , doc){
-        if(err) {
+    tempJson.save(function (err, doc) {
+        if (err) {
             console.log(err);// TODO: take care of error
-            res.status(200).json({'status' : "error"});
+            res.status(200).json({'status': "error"});
         }
         else {
             SittersData.insertSitter(req.body);
             console.log('sitter added');
-            res.status(200).json({'status' : "ok"});
+            res.status(200).json({'status': "ok"});
         }
     });
 });
 
-app.post('/getFirstChild',function(req,res){
+app.post('/getFirstChild', function (req, res) {
     res.status(200).json(SittersData.getFirstChild(req.body.email));
 });
 
-app.post('/updateSitter' ,function(req,res){ //TODO:  send json in react
-    var query = Sitter.findOne().where('email',req.body.email);
-    query.exec(function(err,doc){
+app.post('/updateSitter', function (req, res) { //TODO:  send json in react
+    var query = Sitter.findOne().where('email', req.body.email);
+    query.exec(function (err, doc) {
         var query = doc.update({
-            $set : req.body
+            $set: req.body
         });
-        query.exec(function(err,results){
-            if(err){
+        query.exec(function (err, results) {
+            if (err) {
                 console.log(err);
                 res.status(500).json(err);
                 //TODO: error
@@ -154,16 +152,16 @@ app.post('/updateSitter' ,function(req,res){ //TODO:  send json in react
     });
 });
 
-app.post('/deleteSitter' ,function(req,res){ //TODO:  send json in react
-    var query = Sitter.findOne().where('email',req.body.email);
-    query.exec(function(err,doc){
-        var query = doc.remove(function(err,deletedDoc){
-            if (err){
+app.post('/deleteSitter', function (req, res) { //TODO:  send json in react
+    var query = Sitter.findOne().where('email', req.body.email);
+    query.exec(function (err, doc) {
+        var query = doc.remove(function (err, deletedDoc) {
+            if (err) {
                 res.status(500).json(err);
                 //TODO: error
                 console.log(err);
             }
-            else{
+            else {
                 console.log('deleted');
                 res.status(200).json(SittersData.deleteSitter(req.body));
             }
@@ -171,29 +169,29 @@ app.post('/deleteSitter' ,function(req,res){ //TODO:  send json in react
     });
 });
 
-app.post('/insertParent' ,function(req,res){ 
+app.post('/insertParent', function (req, res) {
     tempJson = new Parent(req.body);
-    tempJson.save(function(err , doc){
-        if(err) {
+    tempJson.save(function (err, doc) {
+        if (err) {
             console.log(err);// TODO: take care of error
             res.status(200).json(err);
         }
         else {
             SittersData.insertParent(req.body);
-            res.status(200).json({'status' : "ok"});
+            res.status(200).json({'status': "ok"});
         }
     });
 });
 
 
-app.post('/updateParent' ,function(req,res){
-    var query = Parent.findOne().where('email',req.body.email);
-    query.exec(function(err,doc){
+app.post('/updateParent', function (req, res) {
+    var query = Parent.findOne().where('email', req.body.email);
+    query.exec(function (err, doc) {
         var query = doc.update({
-            $set : req.body
+            $set: req.body
         });
-        query.exec(function(err,results){
-            if(err){
+        query.exec(function (err, results) {
+            if (err) {
                 console.log(err);
                 res.status(500).json(err);
                 //TODO: error
@@ -207,16 +205,16 @@ app.post('/updateParent' ,function(req,res){
 
 });
 
-app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
-    var query = Parent.findOne().where('email',req.body.email);
-    query.exec(function(err,doc){
-        var query = doc.remove(function(err,deletedDoc){
-            if (err){
+app.post('/deleteParent', function (req, res) { //TODO:  send json in react
+    var query = Parent.findOne().where('email', req.body.email);
+    query.exec(function (err, doc) {
+        var query = doc.remove(function (err, deletedDoc) {
+            if (err) {
                 res.status(500).json(err);
                 //TODO: error
                 console.log(err);
             }
-            else{
+            else {
                 console.log('deleted');
                 res.status(200).json(SittersData.deleteParent(req.body));
             }
@@ -224,51 +222,51 @@ app.post('/deleteParent' ,function(req,res){ //TODO:  send json in react
     });
 });
 
-app.post('/insertInvite', function(req,res){
+app.post('/insertInvite', function (req, res) {
     var invite = req.body;
-    if(!req.body.uuid)
+    if (!req.body.uuid)
         invite.uuid = uuid.v1();
-    var query = Parent.findOne().where('email',invite.parentEmail);
-    query.exec(function(err,doc){
-       var query = doc.update({
-           $push : {invites: invite}
-       });
-         query.exec(function(err,results){
-             //TODO: in case of error in internet
+    var query = Parent.findOne().where('email', invite.parentEmail);
+    query.exec(function (err, doc) {
+        var query = doc.update({
+            $push: {invites: invite}
+        });
+        query.exec(function (err, results) {
+            //TODO: in case of error in internet
         });
     });
 
-    var querySit = Sitter.findOne().where('email',invite.sitterEmail);
-    querySit.exec(function(err,doc){
+    var querySit = Sitter.findOne().where('email', invite.sitterEmail);
+    querySit.exec(function (err, doc) {
         var query = doc.update({
-            $push : {invites: invite}
+            $push: {invites: invite}
         });
-        query.exec(function(err,results){
+        query.exec(function (err, results) {
             res.status(200).json(SittersData.insertInvite(invite));
             //TODO: in case of error in internet
         });
     });
 });
 
-app.post('/insertReview', function(req,res){
+app.post('/insertReview', function (req, res) {
     var review = req.body;
     review.uuid = uuid.v1();
-    var query = Sitter.findOne().where('email',review.sitterEmail);
-    query.exec(function(err,doc){
+    var query = Sitter.findOne().where('email', review.sitterEmail);
+    query.exec(function (err, doc) {
         var query = doc.update({
-            $push : {reviews: review}
+            $push: {reviews: review}
         });
-        query.exec(function(err,results){
+        query.exec(function (err, results) {
             var rating = SittersData.insertReview(review);
-            if ( rating.status == 'updated'){
-                var query = Sitter.findOne().where('email',review.sitterEmail);
-                query.exec(function(err,doc){
+            if (rating.status == 'updated') {
+                var query = Sitter.findOne().where('email', review.sitterEmail);
+                query.exec(function (err, doc) {
                     var query = doc.update({
-                        $set : {'rating': rating.rating}
+                        $set: {'rating': rating.rating}
                     });
-                    query.exec(function(err,results){
+                    query.exec(function (err, results) {
                         console.log('updated rating');
-                        res.json({'status' : 'ok'});
+                        res.json({'status': 'ok'});
                     })
                 });
             }
@@ -277,46 +275,46 @@ app.post('/insertReview', function(req,res){
     });
 });
 
-app.post('/getReviewsBySitterEmail', function(req,res){
+app.post('/getReviewsBySitterEmail', function (req, res) {
     res.status(200).json(SittersData.getReviewsBySitterEmail(req.body.email));
 });
 
-app.post('/getParentFavoriteSitters', function(req,res){
+app.post('/getParentFavoriteSitters', function (req, res) {
     res.status(200).json(SittersData.getParentFavoriteSitters(req.body));
 });
 
-app.post('/getInvitesByParentEmail',function (req,res){
+app.post('/getInvitesByParentEmail', function (req, res) {
     res.status(200).json(SittersData.getInvitesByParentEmail(req.body.email));
 });
 
-app.post('/getInvitesBySitterEmail',function (req,res){
+app.post('/getInvitesBySitterEmail', function (req, res) {
     res.status(200).json(SittersData.getInvitesBySitterEmail(req.body.email));
 });
 
-app.post('/updateInvite' ,function(req,res) {
+app.post('/updateInvite', function (req, res) {
     SittersData.updateInvite(req.body);
-    Parent.collection.update({"invites.uuid": req.body.uuid}, {$set : {"invites.$": req.body}}, function (error, result) {
-        if(error)
-            res.json({'Status' : 'error'});
+    Parent.collection.update({"invites.uuid": req.body.uuid}, {$set: {"invites.$": req.body}}, function (error, result) {
+        if (error)
+            res.json({'Status': 'error'});
     });
-    Sitter.collection.update({"invites.uuid": req.body.uuid}, {$set : {"invites.$": req.body}}, function (error, result) {
-        if(error)
-            res.json({'Status' : 'error'});
+    Sitter.collection.update({"invites.uuid": req.body.uuid}, {$set: {"invites.$": req.body}}, function (error, result) {
+        if (error)
+            res.json({'Status': 'error'});
     });
-    res.status(200).json({'status' : 'updated'});
+    res.status(200).json({'status': 'updated'});
 });
 
-app.post('/updateReview' ,function(req,res){
+app.post('/updateReview', function (req, res) {
     res.status(200).json(SittersData.updateReview(req.body));
     //TODO: update review in mongoDB
 });
 
-app.get('/', function(req,res){
-    res.status(400).json({'Error' : 'oops...  wrong path'});
+app.get('/', function (req, res) {
+    res.status(400).json({'Error': 'oops...  wrong path'});
 });
 
-app.all('*', function(req,res){
-    res.status(400).json({'Error' : 'oops...  wrong path'});
+app.all('*', function (req, res) {
+    res.status(400).json({'Error': 'oops...  wrong path'});
 });
 
 http.createServer(app).listen(port);
