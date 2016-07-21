@@ -18,7 +18,7 @@ var express = require('express'),
     tempSitters;
     moment().format();
 
-mongoose.connect('mongodb://db_usr:db_pass@ds011913.mlab.com:11913/sitters');
+mongoose.connect('mongodb://db_usr:db_pass@ds027215.mlab.com:27215/sitters');
 db = mongoose.connection;
 app.use(bodyParser.json());
 app.use(cors());
