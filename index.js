@@ -97,15 +97,15 @@ app.post('/getSittersByRating', function (req, res) {
 app.post('/getUser', function (req, res) {
     var temp = SittersData.getParentByEmail(req.body.email);
     if (!temp.Error) { // no parent found
-        res.status(200).json({isParent: true, data: temp});
+        res.status(200).json({isParent: true, user: temp});
     }
     else {
         temp = SittersData.getSitterByEmail(req.body.email);
         if (!temp.Error) { // no parent found
-            res.status(200).json({isParent: false, data: temp})
+            res.status(200).json({isParent: false, user: temp})
         }
         else
-            res.status(200).json({isParent: false, data: null});
+            res.status(200).json({isParent: false, user: null});
     }
 });
 
