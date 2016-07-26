@@ -2,56 +2,56 @@
 
 module.exports = {
     events: {
-        AUTHBYEMAIL : 'authByEmail', // TODO: will be implement with G+
+        AUTH_BY_EMAIL : 'authByEmail',
 
         //------------------------Parents---------------------------------
         //GET
-        GETALLPARENTS : 'getAllParents',
-        GETPARENTBYEMAIL : 'getParentByEmail',
-        GETCHILDESBYEMAIL : 'getChildesByEmail',
-        GETCHILDESBYNAME : 'getChildesByName',
-        GETFIRSTCHILD :  'getFirstChild',
+        GET_ALL_PARENTS : 'getAllParents',
+        GET_PARENT_BY_EMAIL : 'getParentByEmail',
+        GET_CHILD_BY_EMAIL : 'getChildByEmail',
+        GET_CHILD_BY_NAME : 'getChildByName',
+        GET_FIRST_CHILD :  'getFirstChild',
         //SET
-        INSERTPARENT : 'insertParent',
-        UPDATEPARENT : 'updateParent',
-        DELETEPARENT : 'deleteParent',
-        
+        INSERT_PARENT : 'insertParent',
+        UPDATE_PARENT : 'updateParent',
+        DELETE_PARENT : 'deleteParent',
+
         //------------------------Sitters--------------------------------
         //GET
-        GETALLSITTERS : 'getAllSitters',
-        GETSITTERBYEMAIL: 'getSitterByEmail',
-        GETSITTERSBYNAME : 'getSittersByName',
-        GETSITTERSBYRATING : 'getSittersByRating',
+        GET_ALL_SITTERS : 'getAllSitters',
+        GET_SITTER_BY_EMAIL: 'getSitterByEmail',
+        GET_SITTERS_BY_NAME : 'getSittersByName',
+        GET_SITTERS_BY_RATING : 'getSittersByRating',
 
         //SET + INSERT
-        INSERTSITTER : "insertSitter",
-        UPDATESITTER : "updateSitter",
-        DELETESITTER : "deleteSitter",
-        UPDATESITTERRATING : 'updateSitterRating',
+        INSERT_SITTER : "insertSitter",
+        UPDATE_SITTER : "updateSitter",
+        DELETE_SITTER : "deleteSitter",
+        UPDATE_SITTER_RATING : 'updateSitterRating',
 
         //Sitters sorting - GET
-        GETTOPRATEDSITTERS : 'getTopRatedSitters',
-        GETAVAILABLENOWSITTERS : 'getAvailableNowSitters',
-        GETSITTERSBYWORKINGHOURS : 'getSittersByWorkingHours',
-        GETSITTERBYGENDER : 'getSitterByGender',
-        
-        GETLASTBOOKEDSITTERS : 'getLastBookedSitters',
-        GETPARENTFAVORITESSITTERS : 'getParentFavoriteSitters',
+        GET_TOP_RATED_SITTERS : 'getTopRatedSitters',
+        GET_AVAILABLE_NOW_SITTERS : 'getAvailableNowSitters',
+        GET_SITTERS_BY_WORKING_HOURS : 'getSittersByWorkingHours',
+        GET_SITTER_BY_GENDER : 'getSitterByGender',
+
+        GET_LAST_BOOKED_SITTERS : 'getLastBookedSitters',
+        GET_PARENT_FAVORITE_SITTERS : 'getParentFavoriteSitters',
 
         //SET + INSERT
         //------------------------Invites---------------------------------
-        GETINVITESBYSITTEREMAIL : 'getInvitesBySitterEmail',
-        GETINVITESBYPARENTEMAIL : 'getInvitesByParentEmail',
+        GET_INVITES_BY_SITTER_EMAIL : 'getInvitesBySitterEmail',
+        GET_INVITES_BY_PARENT_EMAIL : 'getInvitesByParentEmail',
 
         //SET + INSERT
-        INSERTINVITE : 'insertInvite',
-        UPDATEINVITE : 'updateInvite',
-        
+        INSERT_INVITE : 'insertInvite',
+        UPDATE_INVITE : 'updateInvite',
+
         //Reviews
         //GET
-        INSERTREVIEW : 'insertReview',
-        UPDATEREVIEW : 'updateReview',
-        GETREVIEWSBYSITTEREMAIL : 'getReviewsBySitterEmail',  // sitter email
+        INSERT_REVIEW : 'insertReview',
+        UPDATE_REVIEW : 'updateReview',
+        GET_REVIEWS_BY_SITTER_EMAIL : 'getReviewsBySitterEmail'  // sitter email
 
     }
 };

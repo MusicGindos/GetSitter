@@ -12,7 +12,6 @@ var EventEmitter = require('events').EventEmitter,
 class Sitters extends EventEmitter {
     constructor(parentsData,sittersData) {
         super();
-        //this.json = null;
         this.dataParents = parentsData;
         this.dataSitters = sittersData;
 
@@ -30,7 +29,7 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.GETPARENTBYEMAIL,function(parentEmail){
+        this.on(eventsConfig.GET_PARENT_BY_EMAIL,function(parentEmail){
             resultJSON = _.find(_.compact(this.dataParents),function(parent){
                 return parent.email == parentEmail;
             });
@@ -39,7 +38,7 @@ class Sitters extends EventEmitter {
             }
         });
         
-        this.on(eventsConfig.GETCHILDESBYEMAIL,function(parentEmail) {
+        this.on(eventsConfig.GET_CHILD_BY_EMAIL,function(parentEmail) {
             result = null;
             result = _.filter(this.dataParents, function (parent) {
                 return parent.email == parentEmail;
@@ -48,7 +47,7 @@ class Sitters extends EventEmitter {
                 result = {'Error': 'Parent does no exist'};
         });
 
-        this.on(eventsConfig.GETCHILDESBYNAME,function(parentName){
+        this.on(eventsConfig.GET_CHILD_BY_NAME,function(parentName){
             result = null;
             result = _.filter(this.dataParents, function (parent) {
                 return parent.name == parentName;
@@ -57,7 +56,7 @@ class Sitters extends EventEmitter {
                 result = {'Error': 'Parent does no exist'};
         });
 
-        this.on(eventsConfig.GETSITTERBYEMAIL,function(sitterEmail){
+        this.on(eventsConfig.GET_SITTER_BY_EMAIL,function(sitterEmail){
             resultJSON = _.find(this.dataSitters,function(sitter){
                 return sitter.email == sitterEmail;
             });
@@ -66,7 +65,7 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.GETSITTERSBYNAME,function(sitterName){
+        this.on(eventsConfig.GET_SITTERS_BY_NAME,function(sitterName){
             resultJSON = _.find(this.dataSitters,function(sitter){
                 return sitter.name == sitterName;
             });
@@ -75,22 +74,22 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.GETSITTERBYGENDER,function(gender){
+        this.on(eventsConfig.GET_SITTER_BY_GENDER,function(gender){
             resultJSON = _.filter(this.dataSitters, function(obj) { return obj.gender == gender; });
             if(resultJSON == null) {
                 resultJSON = {'Error' :'Sitter does not exist'};
             }
         });
 
-        this.on(eventsConfig.INSERTPARENT,function(parent){
-            this.dataParents[this.dataParents.length + 1] = parent;
+        this.on(eventsConfig.INSERT_PARENT,function(parent){
+            this.dataParents[this.dataParents.length] = parent;
             if (parent != null )
                 resultJSON = {'status' : 'true'};
             else
                 resultJSON  = {'status' : 'false'};
         });
 
-        this.on(eventsConfig.UPDATEPARENT, function(parent){ // TODO: update only fields in json and not all
+        this.on(eventsConfig.UPDATE_PARENT, function(parent){ // TODO: update only fields in json and not all
             var index = -1 ;
             index = _.findIndex(this.dataParents, function(res) { return res.email == parent.email; });
             if(index != -1){
@@ -104,7 +103,7 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.DELETEPARENT, function(parent) {
+        this.on(eventsConfig.DELETE_PARENT, function(parent) {
             var data = _.remove(this.dataParents, function (n) {
                 return n.email != parent.email;
             });
@@ -112,15 +111,15 @@ class Sitters extends EventEmitter {
             resultJSON = {'status' : 'true'};
         });
 
-        this.on(eventsConfig.INSERTSITTER,function(sitter){
-            this.dataSitters[this.dataSitters.length + 1] = sitter;
+        this.on(eventsConfig.INSERT_SITTER,function(sitter){
+            this.dataSitters[this.dataSitters.length] = sitter;
             if (sitter != null )
                 resultJSON = {'status' : 'true'};
             else
                 resultJSON  = {'status' : 'false'};
         });
 
-        this.on(eventsConfig.UPDATESITTER, function(sitter){ //  TODO: update only fields in json and not all
+        this.on(eventsConfig.UPDATE_SITTER, function(sitter){ //  TODO: update only fields in json and not all
             var index = -1 ;
             index = _.findIndex(this.dataSitters, function(res) { return res.email == sitter.email; });
             if(index != -1){
@@ -136,7 +135,7 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.DELETESITTER, function(sitter) {
+        this.on(eventsConfig.DELETE_SITTER, function(sitter) {
             var data = _.remove(this.dataSitters, function (n) {
                 return n.email != sitter.email;
             });
@@ -144,7 +143,7 @@ class Sitters extends EventEmitter {
             resultJSON = {'status' : 'true'};
         });
 
-        this.on(eventsConfig.UPDATESITTERRATING, function(review) { // TODO: check why it fails when insert review
+        this.on(eventsConfig.UPDATE_SITTER_RATING, function(review) { // TODO: check why it fails when insert review
             var tempSitter =  _.find(this.dataSitters,function(sitter){
                 return sitter.email == review.sitterEmail;
             });
@@ -158,7 +157,7 @@ class Sitters extends EventEmitter {
                           'rating' :resultJSON };
         });
 
-        this.on(eventsConfig.GETTOPRATEDSITTERS, function(){
+        this.on(eventsConfig.GET_TOP_RATED_SITTERS, function(){
             resultJSON = _.reverse(_.sortBy(this.dataSitters, function(obj) { return obj.rating; }));
 
             if(resultJSON == null) {
@@ -168,7 +167,7 @@ class Sitters extends EventEmitter {
                 resultJSON = _.compact(resultJSON);
         });
 
-        this.on(eventsConfig.GETAVAILABLENOWSITTERS, function(){
+        this.on(eventsConfig.GET_AVAILABLE_NOW_SITTERS, function(){
             var time = moment().hour();
             var workingHours;
             workingHours = time >= 6 && time <= 14?"Mornings":"Evenings";
@@ -188,7 +187,7 @@ class Sitters extends EventEmitter {
                 resultJSON = {'status' : 'false'};
             }
         });
-        this.on(eventsConfig.GETSITTERSBYWORKINGHOURS, function(workingHours){
+        this.on(eventsConfig.GET_SITTERS_BY_WORKING_HOURS, function(workingHours){
             resultJSON = _.filter(this.dataSitters,function(sitter) {
                 return sitter.workingHours == workingHours;
             });
@@ -199,7 +198,7 @@ class Sitters extends EventEmitter {
                 resultJSON = _.compact(resultJSON);
         });
 
-        this.on(eventsConfig.GETSITTERSBYRATING, function(rating) {
+        this.on(eventsConfig.GET_SITTERS_BY_RATING, function(rating) {
             resultJSON = _.filter(this.dataSitters, function (sitter) {
                 return sitter.rating >= rating;
             });
@@ -208,7 +207,7 @@ class Sitters extends EventEmitter {
             }
         });
 
-        this.on(eventsConfig.INSERTINVITE, function(invite){
+        this.on(eventsConfig.INSERT_INVITE, function(invite){
             var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == invite.sitterEmail; });
             this.dataSitters[indexSitter].invites.push(invite);
             var  indexParent = _.findIndex(this.dataParents, function(res) { return res.email == invite.parentEmail; });
@@ -216,13 +215,13 @@ class Sitters extends EventEmitter {
             resultJSON = {'status':'ok'};
         });
 
-        this.on(eventsConfig.INSERTREVIEW, function(review){
+        this.on(eventsConfig.INSERT_REVIEW, function(review){
             var  indexSitter = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
             this.dataSitters[indexSitter].reviews.push(review);
             resultJSON = {'status':'ok'};
         });
 
-        this.on(eventsConfig.GETPARENTFAVORITESSITTERS, function(parent){
+        this.on(eventsConfig.GET_PARENT_FAVORITE_SITTERS, function(parent){
             var temp = _.find(this.dataParents,function(parentRes){
                 return parentRes.email == parent.email;
             });
@@ -233,7 +232,7 @@ class Sitters extends EventEmitter {
                 resultJSON = _.compact(resultJSON);
         });
 
-        this.on(eventsConfig.GETINVITESBYSITTEREMAIL, function(sitterEmail){
+        this.on(eventsConfig.GET_INVITES_BY_SITTER_EMAIL, function(sitterEmail){
             var temp;
             temp = _.pickBy(this.dataSitters, function(sitter) {
                 return sitter.email == sitterEmail;
@@ -249,7 +248,7 @@ class Sitters extends EventEmitter {
                 resultJSON = {'error' : 'invites not founds'}
         });
 
-        this.on(eventsConfig.GETINVITESBYPARENTEMAIL, function(parentEmail){
+        this.on(eventsConfig.GET_INVITES_BY_PARENT_EMAIL, function(parentEmail){
             var temp;
             temp = _.pickBy(this.dataParents, function(parent) {
                 return parent.email == parentEmail;
@@ -263,7 +262,7 @@ class Sitters extends EventEmitter {
                 resultJSON = {'error' : 'invites not founds'}
         });
 
-        this.on(eventsConfig.GETREVIEWSBYSITTEREMAIL, function(sitterEmail){
+        this.on(eventsConfig.GET_REVIEWS_BY_SITTER_EMAIL, function(sitterEmail){
             var temp;
             temp = _.pickBy(this.dataSitters, function(sitter) {
                 return sitter.email == sitterEmail;
@@ -277,7 +276,7 @@ class Sitters extends EventEmitter {
                 resultJSON = {'error' : 'reviews not founds'}
         });
 
-        this.on(eventsConfig.GETFIRSTCHILD, function(parentEmail){
+        this.on(eventsConfig.GET_FIRST_CHILD, function(parentEmail){
             resultJSON = null;
             resultJSON = _.find(this.dataParents, function (parent) {
                 return parent.email == parentEmail;
@@ -288,7 +287,7 @@ class Sitters extends EventEmitter {
                 resultJSON = resultJSON.childes[0];
         });
 
-        this.on(eventsConfig.UPDATEINVITE, function(invite){
+        this.on(eventsConfig.UPDATE_INVITE, function(invite){
             var parentIndex = _.findIndex(this.dataParents, function(res) { return res.email == invite.parentEmail; });
             if(parentIndex != null ){
                 var inviteIndex = _.findIndex(this.dataParents[parentIndex].invites, function(res) { return res.uuid == invite.uuid; });
@@ -309,7 +308,7 @@ class Sitters extends EventEmitter {
                 resultJSON = {'status' : "failed"};
         });
 
-        this.on(eventsConfig.UPDATEREVIEW, function(review){
+        this.on(eventsConfig.UPDATE_REVIEW, function(review){
             var sitterIndex = _.findIndex(this.dataSitters, function(res) { return res.email == review.sitterEmail; });
 
             if(sitterIndex != null ){
@@ -325,8 +324,8 @@ class Sitters extends EventEmitter {
         });
     }
 
-    authByEmail(email,pass){// TODO:  fix this.
-        this.emit(eventsConfig.AUTHBYEMAIL,email,pass);
+    authByEmail(email,pass){
+        this.emit(eventsConfig.AUTH_BY_EMAIL,email,pass);
         return auth;
     }
 
@@ -335,15 +334,15 @@ class Sitters extends EventEmitter {
     }
 
     getParentByEmail(email){
-        this.emit(eventsConfig.GETPARENTBYEMAIL,email);
+        this.emit(eventsConfig.GET_PARENT_BY_EMAIL,email);
         return resultJSON; // TODO: take care if resultJSON is null
     }
-    getChildesByEmail(email){
-        this.emit(eventsConfig.GETCHILDESBYEMAIL,email);
+    getChildByEmail(email){
+        this.emit(eventsConfig.GET_CHILD_BY_EMAIL,email);
         return this.result; // TODO: take care if resultJSON is null
     }
-    getChildesByName(name){
-        this.emit(eventsConfig.GETCHILDESBYNAME,name);
+    getChildByName(name){
+        this.emit(eventsConfig.GET_CHILD_BY_NAME,name);
         return this.result; // TODO: take care if resultJSON is null
     }
     getAllSitters(){
@@ -351,64 +350,64 @@ class Sitters extends EventEmitter {
     }
 
     getSitterByEmail(email){
-        this.emit(eventsConfig.GETSITTERBYEMAIL,email);
+        this.emit(eventsConfig.GET_SITTER_BY_EMAIL,email);
         return resultJSON; // TODO: take care if resultJSON is null
     }
     getSitterByName(name){
-        this.emit(eventsConfig.GETSITTERSBYNAME,name);
+        this.emit(eventsConfig.GET_SITTERS_BY_NAME,name);
         return resultJSON; // TODO: take care if resultJSON is null
     }
     
     getTopRatedSitters(){
-        this.emit(eventsConfig.GETTOPRATEDSITTERS);
+        this.emit(eventsConfig.GET_TOP_RATED_SITTERS);
         return resultJSON; // TODO: take care if resultJSON is null
     }
     getAvailableNowSitters() {
-        this.emit(eventsConfig.GETAVAILABLENOWSITTERS);
+        this.emit(eventsConfig.GET_AVAILABLE_NOW_SITTERS);
         return resultJSON;
     }
 
     getSittersByWorkingHours(workingHours){
-        this.emit(eventsConfig.GETSITTERSBYWORKINGHOURS,workingHours);
+        this.emit(eventsConfig.GET_SITTERS_BY_WORKING_HOURS,workingHours);
         return resultJSON;
     }
 
     updateSitterRating(email){
-        this.emit(eventsConfig.UPDATESITTERRATING, email);
+        this.emit(eventsConfig.UPDATE_SITTER_RATING, email);
     }
     getSitterByGender(gender){
-        this.emit(eventsConfig.GETSITTERBYGENDER,gender);
+        this.emit(eventsConfig.GET_SITTER_BY_GENDER,gender);
         return resultJSON;
     }
     
     getSittersByRating(rating){
-        this.emit(eventsConfig.GETSITTERSBYRATING,rating);
+        this.emit(eventsConfig.GET_SITTERS_BY_RATING,rating);
         return resultJSON;
     }
 
     insertParent(parent) {
-        this.emit(eventsConfig.INSERTPARENT, parent);
+        this.emit(eventsConfig.INSERT_PARENT, parent);
         return resultJSON;
     }
     updateParent(parent){
-        this.emit(eventsConfig.UPDATEPARENT,parent);
+        this.emit(eventsConfig.UPDATE_PARENT,parent);
         return resultJSON;
     }
 
     deleteParent(parent){
-        this.emit(eventsConfig.DELETEPARENT,parent);
+        this.emit(eventsConfig.DELETE_PARENT,parent);
         return resultJSON;
     }
     insertSitter(sitter){
-        this.emit(eventsConfig.INSERTSITTER,sitter);
+        this.emit(eventsConfig.INSERT_SITTER,sitter);
         return {'status' : 'ok'};
     }
     updateSitter(sitter){
-        this.emit(eventsConfig.UPDATESITTER, sitter);
+        this.emit(eventsConfig.UPDATE_SITTER, sitter);
         return resultJSON;
     }
     deleteSitter(sitter){
-        this.emit(eventsConfig.DELETESITTER, sitter);
+        this.emit(eventsConfig.DELETE_SITTER, sitter);
         return resultJSON;
     }
 
@@ -417,48 +416,48 @@ class Sitters extends EventEmitter {
     }
 
     getParentFavoriteSitters(parent){
-        this.emit(eventsConfig.GETPARENTFAVORITESSITTERS,parent);
+        this.emit(eventsConfig.GET_PARENT_FAVORITE_SITTERS,parent);
         return resultJSON;
     }
     
     getInvitesBySitterEmail(sitter){
-        this.emit(eventsConfig.GETINVITESBYSITTEREMAIL,sitter);
+        this.emit(eventsConfig.GET_INVITES_BY_SITTER_EMAIL,sitter);
         return resultJSON;
     }
 
     getInvitesByParentEmail(parent){
-        this.emit(eventsConfig.GETINVITESBYPARENTEMAIL,parent);
+        this.emit(eventsConfig.GET_INVITES_BY_PARENT_EMAIL,parent);
         return resultJSON;
     }
     
     getReviewsBySitterEmail(email){
-        this.emit(eventsConfig.GETREVIEWSBYSITTEREMAIL,email);
+        this.emit(eventsConfig.GET_REVIEWS_BY_SITTER_EMAIL,email);
         return resultJSON; // TODO: take care if resultJSON is null
     }
     
     insertInvite(invite){ 
-        this.emit(eventsConfig.INSERTINVITE,invite);
+        this.emit(eventsConfig.INSERT_INVITE,invite);
         return resultJSON;
     }
 
     updateInvite(invite){
-        this.emit(eventsConfig.UPDATEINVITE,invite);
+        this.emit(eventsConfig.UPDATE_INVITE,invite);
         return resultJSON;
     }
     getFirstChild(email){
-        this.emit(eventsConfig.GETFIRSTCHILD,email);
+        this.emit(eventsConfig.GET_FIRST_CHILD,email);
         return resultJSON;
     }
 
     insertReview(review){
-        this.emit(eventsConfig.INSERTREVIEW,review);
-        this.emit(eventsConfig.UPDATESITTERRATING,review);  // update rating in local DB
+        this.emit(eventsConfig.INSERT_REVIEW,review);
+        this.emit(eventsConfig.UPDATE_SITTER_RATING,review);  // update rating in local DB
         //TODO : call inner function to update rating of a sitter + send it to mongo
         return resultJSON;  // send the new rating to update in mongoDB
     }
 
     updateReview(review){
-        this.emit(eventsConfig.UPDATEREVIEW,review);
+        this.emit(eventsConfig.UPDATE_REVIEW,review);
         return resultJSON;
     }
 }
