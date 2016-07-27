@@ -198,7 +198,7 @@ class Sitters extends EventEmitter {
                 resultJSON = _.compact(resultJSON);
         });
 
-        this.on(eventsConfig.GET_SITTERS_BY_RATING, function(rating) {
+        this.on(eventsConfig.GET_SITTERS_BY_RATING,function(rating) {
             resultJSON = _.filter(this.dataSitters, function (sitter) {
                 return sitter.rating >= rating;
             });
