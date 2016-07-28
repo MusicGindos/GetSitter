@@ -161,7 +161,7 @@ class Sitters extends EventEmitter {
             resultJSON = _.reverse(_.sortBy(this.dataSitters, function(obj) { return obj.rating; }));
 
             if(resultJSON == null) {
-                resultJSON = {'Error' :'Siters does not exist'};
+                resultJSON = {'Error' :'Sitters does not exist'};
             }
             else
                 resultJSON = _.compact(resultJSON);
@@ -205,6 +205,9 @@ class Sitters extends EventEmitter {
             if (resultJSON == null) {
                 resultJSON = {'Error': 'Sitter does not exist'};
             }
+            else
+                resultJSON = _.reverse(_.sortBy(resultJSON, function(obj) { return obj.rating; }));
+
         });
 
         this.on(eventsConfig.INSERT_INVITE, function(invite){
