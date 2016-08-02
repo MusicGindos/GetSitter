@@ -17,7 +17,6 @@ var Invites = new schema({
 
 var schema_name = new schema({
     email : {type : String, index : 1, unique : true , required : true},
-    password : String,
     name : String,
     maxAge : Number,
     minAge : Number,
